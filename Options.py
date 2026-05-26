@@ -30,18 +30,15 @@ class StartingPutter(Choice):
 class GoldTrophyShuffle(Toggle):
     """Add Gold Trophies as shuffled items in the multiworld item pool.
 
-    When disabled, Gold Trophies are collected by reaching the
-    winning score set in gold_trophy_difficulty for each tournament.
-    When enabled, Gold Trophies from the five main tournaments are items
-    rather than fixed rewards."""
+    When disabled, Gold Trophies are collected by reaching the winning score set in gold_trophy_difficulty for each tournament.
+    When enabled, Gold Trophies from the five main tournaments are items rather than fixed rewards."""
     display_name = "Gold Trophy Shuffle"
     default = 0
 
 class TrophyAmount(Range):
     """Total number of Gold Trophies in the pool.
 
-    This option only works if gold_trophy_shuffle is enabled.
-    Otherwise, the total number of gold trophies in the pool is 5."""
+    This option only works if gold_trophy_shuffle is enabled. Otherwise, the total number of gold trophies in the pool is 5."""
     display_name = "Trophy Amount"
     range_start = 0
     range_end = 200
