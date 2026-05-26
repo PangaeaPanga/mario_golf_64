@@ -1,6 +1,20 @@
 from dataclasses import dataclass
 from Options import Choice, Toggle, Range, DeathLink, PerGameCommonOptions, StartInventoryPool
 
+class LimitTournamentLogic(Choice):
+    """Sets how the item pool is distributed within tournament courses.
+
+    disabled: Progression items may appear in any course.
+    limited: Progression items will only appear in required courses and ringshot/mini golf (if enabled).
+    required_courses_only: Courses that are not required will be completely removed from the item pool.
+    
+    limited is currently incompatible with Universal Tracker."""
+    display_name = "Limit Tournament Logic"
+    option_disabled = 0
+    option_limited = 1
+    option_required_courses_only = 2
+    default = 0
+
 class StartingPutter(Choice):
     """Which putter distance you start with.
 
@@ -13,38 +27,36 @@ class StartingPutter(Choice):
     option_long_putter   = 2
     default = 1
 
-class TrophyCount(Range):
-    """Number of Gold Trophies required to access Mario Open.
-
-    When set to 0, a Mario Open Ticket is added to the item pool instead.
-    When set to 1-5, the ticket is never in the pool and Gold Trophies are
-    collected from the five main tournaments gate entry."""
-    display_name = "Trophy Count"
-    range_start = 0
-    range_end = 5
-    default = 2
-
-class LimitTournamentLogic(Choice):
-    """Sets how the item pool is distributed within tournament courses.
-
-    disabled: Progression items may appear in any course.
-    limited: Progression items will only appear in required courses and ringshot/mini golf (if enabled).
-    required_courses_only: Courses that are not required will be completely removed from the item pool.
-    
-    limited is NOT YET IMPLEMENTED. disabled and required_courses_only work."""
-    display_name = "Limit Tournament Logic"
-    option_disabled = 0
-    option_limited = 1
-    option_required_courses_only = 2
-    default = 0
-
 class GoldTrophyShuffle(Toggle):
     """Add Gold Trophies as shuffled items in the multiworld item pool.
 
+    When disabled, Gold Trophies are collected by reaching the
+    winning score set in gold_trophy_difficulty for each tournament.
     When enabled, Gold Trophies from the five main tournaments are items
     rather than fixed rewards."""
     display_name = "Gold Trophy Shuffle"
     default = 0
+
+class TrophyAmount(Range):
+    """Total number of Gold Trophies in the pool.
+
+    This option only works if gold_trophy_shuffle is enabled.
+    Otherwise, the total number of gold trophies in the pool is 5."""
+    display_name = "Trophy Amount"
+    range_start = 0
+    range_end = 200
+    default = 5
+
+class TrophyCount(Range):
+    """Number of Gold Trophies required to access Mario Open.
+    When set to 0, a Mario Open Ticket is added to the item pool instead.
+    
+    If gold_trophy_shuffle is disabled, the maximum value is 5.
+    If gold_trophy_shuffle is enabled, the maximum value is 200."""
+    display_name = "Trophy Count"
+    range_start = 0
+    range_end = 200
+    default = 2
 
 class GoldTrophyDifficulty(Range):
     """Score required to earn a Gold Trophy in each tournament.
@@ -170,10 +182,11 @@ class FastMeterTrapPercentage(Range):
 @dataclass
 class MG64Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
-    starting_putter: StartingPutter
-    trophy_count: TrophyCount
     limit_tournament_logic: LimitTournamentLogic
+    starting_putter: StartingPutter
     gold_trophy_shuffle: GoldTrophyShuffle
+    trophy_amount: TrophyAmount
+    trophy_count: TrophyCount
     gold_trophy_difficulty: GoldTrophyDifficulty
     course_difficulty: CourseDifficulty
     wind_difficulty: WindDifficulty

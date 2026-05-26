@@ -136,7 +136,7 @@ class MarioGolf64Context(CommonContext):
             1 for item in self.items_received
             if self.item_names.lookup_in_game(item.item) == "Gold Trophy"
         )
-        trophy_count = int(self.slot_data.get("trophy_count", 5))
+        trophy_count = int(self.slot_data.get("trophy_count", 2))
         if trophy_count > 0 and gold_trophies >= trophy_count:
             courses_word |= (1 << 5)  # Mario Open bit
 

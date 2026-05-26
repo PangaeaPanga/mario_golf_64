@@ -312,9 +312,18 @@ class MG64World(World):
         ]]
 
         # Gold Trophies only enter the pool when trophy shuffle is on.
-        # There are 5 main tournaments, each awarding one Gold Trophy.
         if self.options.gold_trophy_shuffle:
-            pool += [self.create_item("Gold Trophy") for _ in range(5)]
+
+            # Check to see if the amount of required trophies is less than the total amount in the pool
+            if self.options.trophy_amount.value < self.options.trophy_count.value:
+                raise Exception("trophy_amount is less than trophy_count.")
+            
+            pool += [self.create_item("Gold Trophy") for _ in range(self.options.trophy_amount.value)]
+
+        # There are 5 main tournaments, each awarding one Gold Trophy.
+        # Check to see if a valid amount of trophies are required
+        elif self.options.trophy_count.value > 5:
+            raise Exception("trophy_count is greater than 5 when gold_trophy_shuffle is disabled.")
 
         # Add the pool to the multiworld item list.
         self.multiworld.itempool += pool
