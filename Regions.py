@@ -22,6 +22,7 @@ region_data_table: Dict[str, MG64RegionData] = {
         "Luigi's Garden",
         "Peach's Castle",
         "Character Match",
+        "Trophy Victory",
     ]),
 
     "Toad Tournament":       MG64RegionData(),
@@ -42,4 +43,5 @@ region_data_table: Dict[str, MG64RegionData] = {
     "Peach's Castle": MG64RegionData(),
 
     "Character Match": MG64RegionData(),
+    "Trophy Victory": MG64RegionData(),
 }

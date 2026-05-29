@@ -3,6 +3,7 @@ from typing import Dict, List, TextIO
 from BaseClasses import Region, Tutorial, ItemClassification, LocationProgressType
 from worlds.AutoWorld import WebWorld, World
 from worlds.LauncherComponents import Component, components, Type, launch_subprocess
+from worlds.generic.Rules import add_rule
 
 from .Items import MG64Item, MG64ItemData, item_data_table, item_table
 from .Locations import MG64Location, MG64LocationData, location_data_table, location_table
@@ -83,32 +84,83 @@ class MG64World(World):
 
             # Since this returns a list with only 1 item, we need to get the trap name this way (I think)
             return selected_trap[0]
-    
-    # TODO limited logic still sometimes makes you do tickets that aren't required
+
     def set_tournament_logic(self, logic_option) -> None:
         tournament_locations = [
             "Toad Tournament",
             "Koopa Cup",
             "Shy Guy International",
             "Yoshi Championship",
-            "Boo Classic"
+            "Boo Classic",
         ]
+        tournaments_to_remove = []
+        tournament_weights = self.options.tournament_likeliness.value
+
+        # Determine if Mario Open should be added to the pool
+        if self.options.goal == 0 or tournament_weights.get("6. Mario Open") == 0:
+            tournament_weights.pop("6. Mario Open")
+            
+        if self.options.goal == 1:
+            if tournament_weights.get("6. Mario Open") == 0:
+                tournaments_to_remove.append("Mario Open")
+            else:
+                tournament_locations.append("Mario Open")
+
+        # Check to see if a valid amount of gold trophies required is set
+        if self.options.gold_trophy_shuffle == 0 and self.options.trophy_count > len([w for w in tournament_weights.values() if w > 0]):
+            raise Exception("trophy_count is greater than the number of tournaments with a likeliness above 0. Please fix your YAML.")
         
+        # Check to see if a valid amount of tournaments required is set
+        if self.options.gold_trophy_shuffle == 1 and self.options.number_of_tournaments != -1 and self.options.number_of_tournaments > len([w for w in tournament_weights.values() if w > 0]):
+            raise Exception("number_of_tournaments is greater than the number of tournaments with a likeliness above 0. Please fix your YAML.")
+
         # Calculate which courses are in the pool
         global tournament_tickets
-        global tournament_tickets_in_logic
+        global tournaments_in_logic
         global trophy_locations
         global tournaments_not_in_logic
         global trophies_in_pool
+        global required_courses
 
         indexes_to_remove = []
         tournament_tickets = []
 
-        # Determine how what courses are in logic
+         # Remove omitted tournaments from the pool (weight is set to 0). Only for disabled and required_courses_only tournament logic
+        if logic_option != 1:
+            for course, weight in tournament_weights.items():
+                if weight == 0:
+                    tournament_locations.remove(course[3:])
+                    tournaments_to_remove.append(course[3:])
+            for loc_name, loc_data in list(location_data_table.items()):
+                for i, val in enumerate(tournaments_to_remove):
+                    if tournaments_to_remove[i] in loc_name:
+                        location_data_table.pop(loc_name)
+
+        # Determine what courses are in logic
         if logic_option == 0:
             pool = tournament_locations
         else:
-            pool = self.random.sample(tournament_locations, self.options.trophy_count)
+            # Remove Mario Open from the pool if the win_mario_open goal is selected
+            if self.options.goal == 0 and tournament_weights.get("6. Mario Open"):
+                tournament_weights.pop("6. Mario Open")
+
+            # Select which courses are in the pool
+            population = list(tournament_weights.keys())
+            weights = list(tournament_weights.values())
+
+            if self.options.number_of_tournaments == -1:
+                self.options.number_of_tournaments = len([w for w in weights if w > 0])
+            if self.options.gold_trophy_shuffle == 0:
+                self.options.number_of_tournaments = self.options.trophy_count
+            k = min(self.options.number_of_tournaments, len([w for w in weights if w > 0]))
+
+            pool = []
+            for _ in range(k):
+                choice = self.multiworld.random.choices(population=population, weights=weights, k=k)[0]
+                idx = population.index(choice)
+                pool.append(choice[3:])
+                population.pop(idx)
+                weights.pop(idx)
 
             # Get the list of courses to remove from the pool
             for i, location in enumerate(tournament_locations):
@@ -124,8 +176,14 @@ class MG64World(World):
             trophies_in_pool = [val + " - Gold Trophy" for i, val in enumerate(tournament_locations) if i in indexes_to_remove]
             tournament_tickets = [val + " Ticket" for i, val in enumerate(tournament_locations) if i in indexes_to_remove]
 
-        tournament_tickets_in_logic = [val + " Ticket" for i, val in enumerate(tournament_locations) if i in indexes_to_remove]
+        tournaments_in_logic = [val for i, val in enumerate(tournament_locations) if i in indexes_to_remove]
         tournaments_not_in_logic = [val for i, val in enumerate(tournament_locations) if i not in indexes_to_remove]
+
+        # Calculate the list of required courses into a single number to send to slot data. -1 means not applicable
+        if indexes_to_remove:
+            required_courses = int("".join(map(str,[x + 1 for x in indexes_to_remove])))
+        else:
+            required_courses = 0
 
         # Remove locations for tournaments not in pool
         if logic_option == 2:
@@ -137,12 +195,16 @@ class MG64World(World):
                         location_data_table.pop(loc_name)
     
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
-        if tournament_tickets_in_logic:
-            spoiler_handle.write("Tournaments in logic:            " + ', '.join(tournament_tickets_in_logic))
+        if tournaments_in_logic:
+            spoiler_handle.write("Tournaments in logic:            " + ', '.join(tournaments_in_logic))
 
     # Early generation
 
     def generate_early(self) -> None:
+        # Check to see if a valid amount of gold trophies is set
+        if self.options.trophy_count == 0 and self.options.goal == 1:
+            raise Exception("trophy_amount must be greater than 0 for gold_trophy goal. Please fix your YAML.")
+        
         self.multiworld.push_precollected(self.create_item("Peach"))
         self.multiworld.push_precollected(self.create_item("Irons"))
 
@@ -161,7 +223,7 @@ class MG64World(World):
             if self.options.limit_tournament_logic.value == 0:
                 starting_ticket = self.random.choice(tournament_tickets)
             else:
-                starting_ticket = self.random.choice(tournament_tickets_in_logic)
+                starting_ticket = self.random.choice(tournaments_in_logic) + " Ticket"
             self.multiworld.push_precollected(self.create_item(starting_ticket))
 
             # Remove the starting ticket from the item pool
@@ -184,6 +246,7 @@ class MG64World(World):
     def create_regions(self) -> None:
         player = self.player
         mw     = self.multiworld
+        goal   = self.options.goal.value
 
         # Regions are named areas of the game. Locations sit inside regions.
         # Entrances are the connections between regions — Rules.py adds
@@ -212,7 +275,7 @@ class MG64World(World):
         # Each location needs: player, name, address (numeric ID), parent region.
         # Victory locations have address=None and get a locked Victory item placed on them.
         # The Victory item is what triggers goal completion when collected.
-        for loc_name, loc_data in location_data_table.items():
+        for loc_name, loc_data in list(location_data_table.items()):
             if not self._location_active(loc_data):
                 continue
 
@@ -226,9 +289,17 @@ class MG64World(World):
                     if tournaments_not_in_logic[i] in loc_name:
                         location.progress_type = LocationProgressType.EXCLUDED
 
-            region.locations.append(location)
+            # Don't create the trophy victory location if goal is not selected
+            if not (goal == 0 and loc_name == "Trophy Victory - Goal"):
+                region.locations.append(location)
 
-            if loc_data.victory:
+                if loc_data.victory:
+                    if goal == 0 and loc_name == "Mario Open - Gold Trophy":
+                        location.place_locked_item(self.create_item("Victory"))
+                    elif goal == 1 and loc_name == "Trophy Victory - Goal":
+                        location.place_locked_item(self.create_item("Victory"))
+
+            else:
                 location.place_locked_item(self.create_item("Victory"))
 
         # If gold trophy shuffle is off, Gold Trophies are fixed rewards —
@@ -315,15 +386,15 @@ class MG64World(World):
         if self.options.gold_trophy_shuffle:
 
             # Check to see if the amount of required trophies is less than the total amount in the pool
-            if self.options.trophy_amount.value < self.options.trophy_count.value:
-                raise Exception("trophy_amount is less than trophy_count.")
+            if self.options.trophy_amount < self.options.trophy_count:
+                raise Exception("trophy_amount is less than trophy_count. Please fix your YAML.")
             
-            pool += [self.create_item("Gold Trophy") for _ in range(self.options.trophy_amount.value)]
+            pool += [self.create_item("Gold Trophy") for _ in range(self.options.trophy_amount)]
 
         # There are 5 main tournaments, each awarding one Gold Trophy.
         # Check to see if a valid amount of trophies are required
-        elif self.options.trophy_count.value > 5:
-            raise Exception("trophy_count is greater than 5 when gold_trophy_shuffle is disabled.")
+        elif self.options.trophy_count > 5:
+            raise Exception("trophy_count is greater than 5 when gold_trophy_shuffle is disabled. Please fix your YAML.")
 
         # Add the pool to the multiworld item list.
         self.multiworld.itempool += pool
@@ -354,10 +425,18 @@ class MG64World(World):
     def set_rules(self) -> None:
         set_rules(self)
 
+        # If tournament logic is set to limited, make the trophies not in logic unreachable
+        # For now, this is achieved by making them require a Mario Open Ticket
+        if self.options.limit_tournament_logic.value == 1:
+            for i, val in enumerate(tournaments_not_in_logic):
+                add_rule(self.multiworld.get_location(tournaments_not_in_logic[i] + " - Gold Trophy", self.player),
+                    lambda state: state.has("Mario Open Ticket", self.player))
+
     # Slot data
 
     def fill_slot_data(self) -> Dict:
         return {
+            "goal":                   self.options.goal.value,
             "starting_putter":        self.options.starting_putter.value,
             "trophy_count":           self.options.trophy_count.value,
             "gold_trophy_shuffle":    self.options.gold_trophy_shuffle.value,
@@ -370,5 +449,6 @@ class MG64World(World):
             "windsanity":             self.options.windsanity.value,
             "pinsanity":              self.options.pinsanity.value,
             "gold_trophy_difficulty": self.options.gold_trophy_difficulty.value,
+            "required_courses":       required_courses,
             "death_link":             self.options.death_link.value,
         }

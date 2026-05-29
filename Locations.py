@@ -59,6 +59,11 @@ location_data_table["Mario Open - Gold Trophy"] = MG64LocationData(
     "Mario Open", LOC_BASE + 0x00B4, victory=True
 )
 
+# Create a victory location for when gold_trophies goal is selected.
+location_data_table["Trophy Victory - Goal"] = MG64LocationData(
+    "Trophy Victory", LOC_BASE + 0x00B5, victory=True
+)
+
 _ring_shot_names = {
     "Toad Highlands - Ring Shot": [
         "Give It a Shot!",

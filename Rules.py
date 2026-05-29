@@ -281,10 +281,11 @@ def _set_mario_open_rule(world) -> None:
     mw      = world.multiworld
     options = world.options
 
+    tournament_weights = options.tournament_likeliness.value
     entrance = mw.get_entrance("Menu -> Mario Open", player)
     count    = options.trophy_count.value
 
-    if count == 0:
+    if count == 0 or (options.goal.value != 0 and tournament_weights.get("6. Mario Open") != 0):
         entrance.access_rule = lambda state: state.has("Mario Open Ticket", player)
     else:
         entrance.access_rule = lambda state: state.has("Gold Trophy", player, count)
@@ -339,5 +340,14 @@ def _set_victory_rule(world) -> None:
     try:
         loc = mw.get_location("Mario Open - Gold Trophy", player)
         loc.access_rule = lambda state: victory_rule(state, player)
+    except KeyError:
+        pass
+
+    def rule_gold_trophies(state: CollectionState, player: int) -> bool:
+        return state.has("Gold Trophy", player, world.options.trophy_count.value)
+
+    try:
+        loc = mw.get_location("Trophy Victory - Goal", player)
+        loc.access_rule = lambda state: rule_gold_trophies(state, player)
     except KeyError:
         pass

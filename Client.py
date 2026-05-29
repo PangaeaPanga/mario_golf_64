@@ -157,6 +157,7 @@ class MarioGolf64Context(CommonContext):
             "pinsanity":              int(self.slot_data.get("pinsanity",              0)),
             "gold_trophy_difficulty": int(self.slot_data.get("gold_trophy_difficulty", 0)),
             "num_gold_trophies":      gold_trophies,
+            "required_courses":       int(self.slot_data.get("required_courses",       0)),
             "death_link":             int(bool(self.slot_data.get("death_link", False))),
         }
         trap = self.pending_traps.pop(0) if self.pending_traps else None
@@ -275,6 +276,19 @@ async def handle_tracker_info(ctx: "MarioGolf64Context", payload: dict) -> None:
             },
         }])
 
+async def handle_goal(ctx: "MarioGolf64Context", new_checks: list) -> None:
+    # Count Gold Trophies and goal if threshold is met (only if goal is set to gold_trophies)
+    goal = int(ctx.slot_data.get("goal", 0))
+    trophy_count = int(ctx.slot_data.get("trophy_count", 2))
+    gold_trophies = sum(
+        1 for item in ctx.items_received
+        if ctx.item_names.lookup_in_game(item.item) == "Gold Trophy"
+    )
+
+    if goal == 1 and gold_trophies >= trophy_count:
+        await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
+        ctx.finished_game = True
+
 async def connect_to_emulator(ctx: MarioGolf64Context) -> None:
     logger.info(f"Attempting to connect to BizHawk on 127.0.0.1:{SOCKET_PORT}...")
     try:
@@ -304,6 +318,8 @@ async def process_emulator_payload(ctx: MarioGolf64Context, payload: dict) -> No
             continue
         ctx.local_checked_locations.add(loc_id)
         new_checks.append(loc_id)
+    
+    await handle_goal(ctx, new_checks)
 
     if new_checks:
         async_start(ctx.send_msgs([{"cmd": "LocationChecks", "locations": new_checks}]))
