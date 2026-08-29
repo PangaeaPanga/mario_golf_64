@@ -136,7 +136,7 @@ class CourseDifficulty(Choice):
     default = 0
 
 class WindDifficulty(Range):
-    """Maximum wind speed per hole selected when loading a save file."""
+    """Maximum wind speed per hole."""
     display_name = "Wind Difficulty"
     range_start = 0
     range_end = 21
