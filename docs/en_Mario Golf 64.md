@@ -92,4 +92,4 @@ Not guaranteed to be added, but just ideas for the future:
 - Implementing hole shuffle (each individual hole of a tournament can be a completely random hole from any tournament)
 - Implementing full Universal Tracker support
 - Implementing death link send on double-bogey or worse and making it independently toggleable on/off from the normal death link
-- Handling a queue multiple traps
+- Handling a queue of multiple traps
