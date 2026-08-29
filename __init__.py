@@ -2,7 +2,7 @@ from typing import Dict, List, TextIO
 
 from BaseClasses import Region, Tutorial, ItemClassification, LocationProgressType
 from worlds.AutoWorld import WebWorld, World
-from worlds.LauncherComponents import Component, components, Type, launch_subprocess
+from worlds.LauncherComponents import Component, components, Type, launch_subprocess, icon_paths
 from worlds.generic.Rules import add_rule
 
 from .Items import MG64Item, MG64ItemData, item_data_table, item_table
@@ -15,7 +15,8 @@ def run_client() -> None:
     from .Client import main
     launch_subprocess(main, name="Mario Golf 64 Client")
 
-components.append(Component("Mario Golf 64 Client", func=run_client, component_type=Type.CLIENT))
+icon_paths["mg64"] = f"ap:{__name__}/assets/mg64_ap_logo.png"
+components.append(Component("Mario Golf 64 Client", func=run_client, component_type=Type.CLIENT, icon="mg64"))
 
 class MG64WebWorld(WebWorld):
     theme = "grass"

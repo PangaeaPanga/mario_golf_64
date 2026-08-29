@@ -11,7 +11,7 @@
 1. Open BizHawk and load your Mario Golf 64 ROM. **MAKE SURE TO DELETE YOU SAVE DATA BEFORE OPENING THE LUA SCRIPT.**
 2. Go to **Tools → Lua Console**.
 3. Open `connector_mario_golf_64.lua` in the Lua Console and click **Script → Run**.
-4. Connect to your Archipelago server using the AP client with your slot name and server address.
+4. Connect to your Archipelago server using the Mario Golf 64 AP client with your slot name and server address.
 
 ## Generating a Game
 

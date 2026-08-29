@@ -20,13 +20,13 @@ Currently, only tournament and ring shot modes are enabled. 2-4 players are not 
 Locations in which items can be found:
 - All Birdie Badges
 - Pars on each tournament hole (Parsanity)
-- Ring Shot hole clears
+- Ring Shot hole clears (Ringshotsanity)
 - Bronze/Silver/Gold trophies
 
 Items that can be shuffled:
-- Certain characters (Maple, Metal Mario). Peach is the starting characters
-- Certain clubs (wedges, woods). All irons (2i-9i) are the starting clubs
-- Putter lengths (short, middle, long). Starting putter is defined in player options
+- Certain characters (Maple, Metal Mario). You start with peach
+- Certain clubs (wedges, woods). You start with all your irons (2i-9i)
+- Putter lengths (short, middle, long). Your starting putter is defined in player options
 - All club abilities (approach shot, power shot)
 - All tournament tickets
 - All ring shot tickets
@@ -39,10 +39,6 @@ Items that can be shuffled:
 
 ## When the player receives an item, what happens?
 Currently, there is no in-game notification system that tells the player that they have received an item. You can refer to the client by using the `/unlocked` command which tells you what do you have.
-
-Here you can tell the player what it will look like when you receive an item in game. This is really nice cause it helps people figure out if
-they actually are receiving items the first time they set up the game. Also nice for explaining that really funny/cool/quirky system you
-put into your game that only a few people will see but youre really proud of.
 
 ## Future Roadmap
 Not guaranteed to be added, but just ideas for the future:
