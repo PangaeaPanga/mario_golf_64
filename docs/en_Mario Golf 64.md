@@ -65,15 +65,16 @@ The logic for trophy scoring is a bit different than how it is displayed in-game
 Some of the logic for a few of the checks have special logic, outside of "can you reach this distance with these clubs":
 - Both `Mario's Star Ring Shot 1 - Bloober Calamari Rings` and `Yoshi's Island Ring Shot 1 - Doughnut Hole` require approach shot because those greens are tiny
 - `Mario Open - Gold Trophy` requires short putter because some of those greens are awful to putt with only a middle or long putter
+
 I will probably create a spreadsheet that outlines all the logic at some point so people can build off of it.
 
-### YAML Settings
+### More information on some of the YAML settings
 How the `limit_tournament_logic` setting works:
 - `disabled`: progression items may appear in any course. This means that you may need to visit any tournament you have unlocked to progress your seed
 - `limited`: progression items will only appear in required courses. The lua script will tell you exactly which courses the logic wants you to complete. However, if you have access to any other tournaments, you can still get a gold trophy by winning that tournament if you want to and are able to. You are just not required to. This option is also incompatible with Universal Tracker
 - `required_courses_only`: Courses that are not required will be completely removed from the item pool
 
-## Future Roadmap
+## Future roadmap
 Not guaranteed to be added, but just ideas for the future:
 - Switching setup from running a dedicated lua script to opening a patched ROM
 - Having the user-defined score to win a gold trophy reflect accurately in-game (the score to win each tournament is different in the vanilla game)

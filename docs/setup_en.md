@@ -16,7 +16,6 @@
 2. Edit your YAML options how you like and put it in the `Players` folder located at `C:\ProgramData\Archipelago\Players`
 3. Click Generate in the Launcher which will make the multiworld based on all YAML files in that `Players` folder. This will create a .zip file located in the `output` folder located at `C:\ProgramData\Archipelago\output`
 4. [Upload it to the Archipelago website](https://archipelago.gg/uploads) by selecting the .zip file created in the `output` folder or use the Archipelago Launcher to generate locally
-5. Host or join a multiworld session.
 
 For more information, check out the [Archipelago instructions for generating a game](https://archipelago.gg/tutorial/Archipelago/setup/en#generating-a-game) and [hosting an archipelago server](https://archipelago.gg/tutorial/Archipelago/setup_en#hosting-an-archipelago-server).
 
