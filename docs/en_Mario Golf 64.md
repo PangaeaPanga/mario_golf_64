@@ -55,7 +55,7 @@ Right now, I only included Peach, Maple, and Metal Mario as playable characters.
 The logic for getting birdie badges is based on two assumptions:
 - You can get a green-in-regulation with the current club/character combination
 - You can one-putt from anywhere on the green with any putter
-This logic starts to become fuzzier when you include wind (i.e. what happens if you have a strong headwind on a specific hole?), and the logic per hole assumes no wind, for simplicity's sake. So once you add every single character and every single club, the logic starts to grow exponentially more complicated. I highly recommend using the PopTracker to see what's in logic.
+This logic starts to become fuzzier when you include wind (i.e. what happens if you have a strong headwind on a specific hole?), and the logic per hole assumes no wind, for simplicity's sake. So once you add every single character and every single club, the logic starts to grow exponentially more complicated. I highly recommend using the [PopTracker](https://github.com/PangaeaPanga/mario_golf_64_poptracker) to see what's in logic.
 
 The logic for trophy scoring is a bit different than how it is displayed in-game. Even if the game tells you that you got a certain trophy, these are the actual thresholds for each tournament:
 - Bronze trophies require **even par** or better
