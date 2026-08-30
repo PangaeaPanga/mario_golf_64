@@ -235,7 +235,8 @@ async def emulator_sync_task(ctx: MarioGolf64Context) -> None:
             await process_emulator_payload(ctx, payload)
             # Handle death sent from Lua
             if payload.get("death_out") and ctx.slot_data.get("death_link"):
-                await ctx.send_death("Mario Golf 64")
+                player_name = ctx.player_names[ctx.slot] if ctx.slot in ctx.player_names else "Player"
+                await ctx.send_death(f"{player_name} doesn't know how to hit a golf ball.")
             
             await handle_tracker_info(ctx, payload)
 
