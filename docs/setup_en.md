@@ -7,7 +7,7 @@
 - The Mario Golf 64 Archipelago Lua script (`connector_mario_golf_64.lua`)
 
 ### BizHawk settings
-The only setting you really need to mess with is the video plugin. If you don't care about glitchy graphics (particularly in the fairways and greens), then you can most likely skip these steps. `Angrylion` is recommended, but requires more performance. Otherwise, `Glide64Mk2` is a good backup option. This Lua script is designed for `Angrylion`, so some of the on-screen displays may not be positioned properly if using `Glide64Mk2`.
+The only setting you really need to mess with is the video plugin. `Angrylion` is recommended, but requires more performance. Otherwise, `Glide64Mk2` is a good backup option. This Lua script is designed for `Angrylion`, so some of the on-screen displays may not be positioned properly if using `Glide64Mk2`.
 
 1. Open BizHawk.
 2. Go to **Config → Core Settings → For Consoles → Mupen64Plus → Video Plugins...**
