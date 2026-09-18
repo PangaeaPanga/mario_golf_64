@@ -39,6 +39,7 @@ class MG64World(World):
     """
 
     game                 = "Mario Golf 64"
+    ap_world_version     = "0.1.0"
     web                  = MG64WebWorld()
     options_dataclass    = MG64Options
     options: MG64Options
@@ -196,6 +197,7 @@ class MG64World(World):
                         location_data_table.pop(loc_name)
     
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
+        spoiler_handle.write("Starting tournament:             " + str(starting_ticket).replace(' Ticket', '\n'))
         if tournaments_in_logic:
             spoiler_handle.write("Tournaments in logic:            " + ', '.join(tournaments_in_logic))
 
@@ -234,6 +236,8 @@ class MG64World(World):
             self.multiworld.push_precollected(self.create_item("Mario Open Ticket"))
 
         # Starting putter based on YAML option
+        global putter_item
+
         starting_putter = getattr(self.options, "starting_putter", None)
         if starting_putter is not None:
             val = starting_putter.value if hasattr(starting_putter, "value") else int(starting_putter)
@@ -381,7 +385,7 @@ class MG64World(World):
             "Short Putter",
             "Middle Putter",
             "Long Putter",
-        ]]
+        ] if name != putter_item] # Make sure to remove the starting putter from the pool.
 
         # Gold Trophies only enter the pool when trophy shuffle is on.
         if self.options.gold_trophy_shuffle:
@@ -443,6 +447,7 @@ class MG64World(World):
             "gold_trophy_shuffle":    self.options.gold_trophy_shuffle.value,
             "ringshotsanity":         self.options.ringshotsanity.value,
             "holesanity":             self.options.holesanity.value,
+            "birdiesanity":           self.options.birdiesanity.value,
             "parsanity":              self.options.parsanity.value,
             "minigolfsanity":         self.options.minigolfsanity.value,
             "versussanity":           self.options.versussanity.value,
@@ -451,5 +456,7 @@ class MG64World(World):
             "pinsanity":              self.options.pinsanity.value,
             "gold_trophy_difficulty": self.options.gold_trophy_difficulty.value,
             "required_courses":       required_courses,
+            "starting_ticket":        starting_ticket,
             "death_link":             self.options.death_link.value,
+            "seed":                   str(self.multiworld.seed_name)
         }
