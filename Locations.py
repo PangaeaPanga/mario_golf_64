@@ -17,7 +17,7 @@ LOC_BASE = 0x4D480000
 def _tournament_locs(name: str, base: int) -> Dict[str, MG64LocationData]:
     locs: Dict[str, MG64LocationData] = {}
     for i in range(1, 19):
-        locs[f"{name} - Birdie Badge {i}"] = MG64LocationData(name, base + (i - 1))
+        locs[f"{name} - Birdie Badge {i}"] = MG64LocationData(name, base + (i - 1), "birdiesanity")
     locs[f"{name} - Silver Trophy"] = MG64LocationData(name, base + 0x12)
     locs[f"{name} - Bronze Trophy"] = MG64LocationData(name, base + 0x13)
     locs[f"{name} - Gold Trophy"]   = MG64LocationData(name, base + 0x14)

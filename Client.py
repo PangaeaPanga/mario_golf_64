@@ -145,9 +145,10 @@ class MarioGolf64Context(CommonContext):
             str(self.slot_data.get("starting_putter", "middle_putter")).lower(), 0)
         
         settings = {
-            "ringshotsanity":         int(self.slot_data.get("ringshotsanity",         1)),
+            "ringshotsanity":         int(self.slot_data.get("ringshotsanity",         0)),
             "holesanity":             int(self.slot_data.get("holesanity",             0)),
-            "parsanity":              int(self.slot_data.get("parsanity",              0)),
+            "birdiesanity":           int(self.slot_data.get("birdiesanity",           0)),
+            "parsanity":              int(self.slot_data.get("parsanity",              1)),
             "minigolfsanity":         int(self.slot_data.get("minigolfsanity",         0)),
             "versussanity":           int(self.slot_data.get("versussanity",           0)),
             "starting_putter":        int(self.slot_data.get("starting_putter",        1)),
@@ -155,7 +156,7 @@ class MarioGolf64Context(CommonContext):
             "wind_difficulty":        int(self.slot_data.get("wind_difficulty",       10)),
             "windsanity":             int(self.slot_data.get("windsanity",             0)),
             "pinsanity":              int(self.slot_data.get("pinsanity",              0)),
-            "gold_trophy_difficulty": int(self.slot_data.get("gold_trophy_difficulty", 0)),
+            "gold_trophy_difficulty": int(self.slot_data.get("gold_trophy_difficulty", 4)),
             "num_gold_trophies":      gold_trophies,
             "required_courses":       int(self.slot_data.get("required_courses",       0)),
             "death_link":             int(bool(self.slot_data.get("death_link", False))),

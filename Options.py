@@ -142,6 +142,28 @@ class WindDifficulty(Range):
     range_end = 21
     default = 10
 
+class Birdiesanity(Toggle):
+    """Add a location for achieving birdie on every tournament hole."""
+    display_name = "Birdie Sanity"
+    default = 0
+
+class Parsanity(Toggle):
+    """Add a location for achieving par on every tournament hole."""
+    display_name = "Par Sanity"
+    default = 1
+
+class Holesanity(Toggle):
+    """Add a location for every individual tournament hole completion."""
+    display_name = "Hole Sanity"
+    default = 0
+
+class Ringshotsanity(Toggle):
+    """Add a location for every Ring Shot challenge.
+
+    Toad Highlands - Ring Shot Ticket is added as a starting item by default when enabled."""
+    display_name = "Ring Shot Sanity"
+    default = 0
+
 class Windsanity(Toggle):
     """Wind speed and direction changes after every shot."""
     display_name = "Wind Sanity"
@@ -150,23 +172,6 @@ class Windsanity(Toggle):
 class Pinsanity(Toggle):
     """Pin location changes after every shot. This includes putting."""
     display_name = "Pin Sanity"
-    default = 0
-
-class Ringshotsanity(Toggle):
-    """Add a location for every Ring Shot challenge.
-
-    Toad Highlands - Ring Shot Ticket is added as a starting item by default when enabled."""
-    display_name = "Ring Shot Sanity"
-    default = 1
-
-class Parsanity(Toggle):
-    """Add a location for achieving par on every tournament hole."""
-    display_name = "Par Sanity"
-    default = 0
-
-class Holesanity(Toggle):
-    """Add a location for every individual tournament hole completion."""
-    display_name = "Hole Sanity"
     default = 0
 
 class Minigolfsanity(Toggle):
@@ -250,6 +255,7 @@ class MG64Options(PerGameCommonOptions):
     windsanity: Windsanity
     pinsanity: Pinsanity
     ringshotsanity: Ringshotsanity
+    birdiesanity: Birdiesanity
     parsanity: Parsanity
     holesanity: Holesanity
     minigolfsanity: Minigolfsanity
