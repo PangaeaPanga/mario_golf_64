@@ -29,7 +29,17 @@ For more information, check out the [Archipelago instructions for generating a g
 ## Joining A Multiworld
 1. Open BizHawk and load your Mario Golf 64 ROM. **MAKE SURE TO DELETE YOU SAVE DATA BEFORE OPENING THE LUA SCRIPT.**
 2. Go to **Tools → Lua Console**.
-3. Open `connector_mario_golf_64.lua` in the Lua Console and click **Script → Run**.
+3. Open `connector_mario_golf_64.lua` in the Lua Console and click **Script → Run** (it might freeze for a couple of seconds).
 4. Connect to your Archipelago server using the Mario Golf 64 AP client with your slot name and server address.
+
+## Troubleshooting
+**Error:** Using the /N64 command results in "Emulator status: Not connected to emulator. Please run connectory_mario_golf_64.lua in BizHawk."  
+**Solution:** Make sure you connect to the server first before using /N64 (click on the "Connect" button on the top right of the Mario Golf 64 Client and enter your slot name and server address)
+
+**Error:** Mario Golf 64 is not sending or receiving checks.  
+**Solution:** The lua script most likely lost connection to the server. Make sure you completely close and reopen the Lua Console, then rerun the connector script.
+
+**Error:** I have an error that is not listed here.  
+**Solution:** Please report it in the [Mario Golf 64 post of the Archipelago Discord](https://discord.com/channels/731205301247803413/1543421639348191242).
 
 For more information, check out the [Archipelago instructions for connecting to an archipelago server](https://archipelago.gg/tutorial/Archipelago/setup_en#connecting-to-an-archipelago-server).
