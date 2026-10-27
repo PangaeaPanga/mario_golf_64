@@ -17,6 +17,7 @@ player_location_map = dict()
 player_ticket_map = dict()
 player_putter_map = dict()
 player_tournament_map = dict()
+player_logic_map = dict()
 
 def run_client() -> None:
     from .Client import main
@@ -212,8 +213,8 @@ class MG64World(World):
     
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
         spoiler_handle.write("Starting tournament:             " + str(player_ticket_map.get(self.player)).replace(' Ticket', '\n'))
-        if tournaments_in_logic:
-            spoiler_handle.write("Tournaments in logic:            " + ', '.join(tournaments_in_logic))
+        if player_logic_map.get(self.player):
+            spoiler_handle.write("Tournaments in logic:            " + ', '.join(player_logic_map.get(self.player)) + '\n')
 
     # Early generation
 
@@ -264,6 +265,7 @@ class MG64World(World):
         player_ticket_map[self.player] = starting_ticket
         player_putter_map[self.player] = putter_item
         player_tournament_map[self.player] = tournament_tickets
+        player_logic_map[self.player] = tournaments_in_logic
 
     # Region and location creation
 
