@@ -119,10 +119,6 @@ class MG64World(World):
         # Check to see if a valid amount of gold trophies required is set
         if self.options.gold_trophy_shuffle == 0 and self.options.trophy_count > len([w for w in tournament_weights.values() if w > 0]):
             raise Exception("trophy_count is greater than the number of tournaments with a likeliness above 0. Please fix your YAML.")
-        
-        # Check to see if a valid amount of tournaments required is set
-        if self.options.gold_trophy_shuffle == 1 and self.options.number_of_tournaments != -1 and self.options.number_of_tournaments > len([w for w in tournament_weights.values() if w > 0]):
-            raise Exception("number_of_tournaments is greater than the number of tournaments with a likeliness above 0. Please fix your YAML.")
 
         # Calculate which courses are in the pool
         global tournament_tickets
@@ -161,11 +157,11 @@ class MG64World(World):
             population = list(tournament_weights.keys())
             weights = list(tournament_weights.values())
 
-            if self.options.number_of_tournaments == -1:
-                self.options.number_of_tournaments = len([w for w in weights if w > 0])
+            if self.options.number_of_tournaments.value == -1:
+                self.options.number_of_tournaments.value = len([w for w in weights if w > 0])
             if self.options.gold_trophy_shuffle == 0:
-                self.options.number_of_tournaments = self.options.trophy_count
-            k = min(self.options.number_of_tournaments, len([w for w in weights if w > 0]))
+                self.options.number_of_tournaments.value = self.options.trophy_count
+            k = min(self.options.number_of_tournaments.value, len([w for w in weights if w > 0]))
 
             pool = []
             for _ in range(k):
