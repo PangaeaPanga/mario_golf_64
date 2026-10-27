@@ -11,6 +11,13 @@ from .Regions import region_data_table
 from .Options import MG64Options
 from .Rules import set_rules
 
+# Dictionaries that map each setting per player during generation
+player_trophy_map = dict()
+player_location_map = dict()
+player_ticket_map = dict()
+player_putter_map = dict()
+player_tournament_map = dict()
+
 def run_client() -> None:
     from .Client import main
     launch_subprocess(main, name="Mario Golf 64 Client")
@@ -127,16 +134,19 @@ class MG64World(World):
         indexes_to_remove = []
         tournament_tickets = []
 
+        # Create a copy of the location data table for each player
+        current_player_locations = location_data_table.copy()
+
          # Remove omitted tournaments from the pool (weight is set to 0). Only for disabled and required_courses_only tournament logic
         if logic_option != 1:
             for course, weight in tournament_weights.items():
                 if weight == 0:
                     tournament_locations.remove(course[3:])
                     tournaments_to_remove.append(course[3:])
-            for loc_name, loc_data in list(location_data_table.items()):
+            for loc_name, loc_data in list(current_player_locations.items()):
                 for i, val in enumerate(tournaments_to_remove):
                     if tournaments_to_remove[i] in loc_name:
-                        location_data_table.pop(loc_name)
+                        current_player_locations.pop(loc_name)
 
         # Determine what courses are in logic
         if logic_option == 0:
@@ -191,13 +201,17 @@ class MG64World(World):
         if logic_option == 2:
 
             # Remove locations from the pool
-            for loc_name, loc_data in list(location_data_table.items()):
+            for loc_name, loc_data in list(current_player_locations.items()):
                 for i, val in enumerate(tournaments_not_in_logic):
                     if tournaments_not_in_logic[i] in loc_name:
-                        location_data_table.pop(loc_name)
+                        current_player_locations.pop(loc_name)
+
+        # Associate the correct locations and trophies for each player (needed if more than one Mario Golf YAML is in the same seed)
+        player_location_map[self.player] = current_player_locations
+        player_trophy_map[self.player] = trophies_in_pool
     
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
-        spoiler_handle.write("Starting tournament:             " + str(starting_ticket).replace(' Ticket', '\n'))
+        spoiler_handle.write("Starting tournament:             " + str(player_ticket_map.get(self.player)).replace(' Ticket', '\n'))
         if tournaments_in_logic:
             spoiler_handle.write("Tournaments in logic:            " + ', '.join(tournaments_in_logic))
 
@@ -246,6 +260,11 @@ class MG64World(World):
             
             self.multiworld.push_precollected(self.create_item(putter_item))
 
+        # Associate starting items for each player (needed if more than one Mario Golf YAML is in the same seed)
+        player_ticket_map[self.player] = starting_ticket
+        player_putter_map[self.player] = putter_item
+        player_tournament_map[self.player] = tournament_tickets
+
     # Region and location creation
 
     def create_regions(self) -> None:
@@ -280,7 +299,11 @@ class MG64World(World):
         # Each location needs: player, name, address (numeric ID), parent region.
         # Victory locations have address=None and get a locked Victory item placed on them.
         # The Victory item is what triggers goal completion when collected.
-        for loc_name, loc_data in list(location_data_table.items()):
+
+        # Get the locations in the pool for the current player
+        current_player_locations = player_location_map.get(self.player)
+
+        for loc_name, loc_data in list(current_player_locations.items()):
             if not self._location_active(loc_data):
                 continue
 
@@ -331,7 +354,11 @@ class MG64World(World):
     # place_locked_item() puts an item directly on a location, preventing
     # Archipelago from placing anything else there.
     def _lock_gold_trophies(self, regions: Dict[str, Region]) -> None:
-        for loc_name in trophies_in_pool:
+
+        # Get the trophies in the pool for the current player
+        current_player_trophies = player_trophy_map.get(self.player)
+        
+        for loc_name in current_player_trophies:
             loc = self.multiworld.get_location(loc_name, self.player)
             if loc is not None:
                 loc.place_locked_item(self.create_item("Gold Trophy"))
@@ -341,7 +368,7 @@ class MG64World(World):
     def create_items(self) -> None:
         pool: List[MG64Item] = []
 
-        pool += [self.create_item(name) for name in tournament_tickets]
+        pool += [self.create_item(name) for name in player_tournament_map.get(self.player)]
 
         #pool += [self.create_item(name) for name in [
             #"Toad Tournament Ticket",
@@ -385,7 +412,7 @@ class MG64World(World):
             "Short Putter",
             "Middle Putter",
             "Long Putter",
-        ] if name != putter_item] # Make sure to remove the starting putter from the pool.
+        ] if name != player_putter_map.get(self.player)] # Make sure to remove the starting putter from the pool.
 
         # Gold Trophies only enter the pool when trophy shuffle is on.
         if self.options.gold_trophy_shuffle:
