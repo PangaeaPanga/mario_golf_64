@@ -85,7 +85,7 @@ local required_courses                = 0
 local detected_locations = {}  -- all checks ever found; always resent so Python never misses one (hopefully)
 local baseline_sram      = {}  -- ring shot SRAM state at connect time
 
-
+local has_deleted = false -- User has manually pressed the OK button, confirming their save data has been deleted
 
 
 -- ADDRESSES
@@ -1884,6 +1884,29 @@ local function receive_from_client()
   end
 end
 
+-- USER CONFIRMATION BEFORE CONNECTING
+local function check_save_file_deleted()
+  if has_deleted then return end
+
+  -- Get mouse data
+  mouse = input.getmouse()
+  mouseX = mouse.X
+  mouseY = mouse.Y
+  mouseLeft = mouse.Left
+
+  -- Draw graphics/confirmation box
+  gui.drawText(50, 30, "Make sure to delete your save file or erase", "Red", "Black", 20)
+  gui.drawText(40, 50, "your data in-game before starting a new seed.", "Red", "Black", 20)
+  gui.drawText(60, 90, "Click START when you are ready to connect.", "Red", "Black", 20)
+  gui.drawRectangle(275, 118, 80, 24, "Yellow", "Black")
+  gui.drawText(282, 120, "START", "Yellow", "Black", 20)
+
+  -- Check to see if the user clicked within the box
+  if mouseLeft and mouseX > 275 and mouseX < 355 and mouseY > 118 and mouseY < 142 then
+    has_deleted = true
+  end
+end
+
 -- MAIN LOOP
 
 event.onexit(function()
@@ -1924,7 +1947,7 @@ while true do
   end
 
   -- Receive every frame (drains full queue hopefully)
-  if ap_socket ~= nil then
+  if ap_socket ~= nil and has_deleted then
     receive_from_client()
   end
 
@@ -1941,7 +1964,12 @@ while true do
     local c_course = mainmemory.read_u8(RDRAM.course_select)
     local c_hole = mainmemory.read_u8(RDRAM.current_hole)
     
-    send_to_client({ locations = locs, gameComplete = game_complete, death_out = d_out, current_mode = c_mode, current_course = c_course, current_hole = c_hole })
+    -- Send the data only if the user has confirmed their save data has been deleted from a previous connection
+    if not has_deleted then
+      send_to_client({ locations = "", gameComplete = false, death_out = 0, current_mode = c_mode, current_course = c_course, current_hole = c_hole })
+    else
+      send_to_client({ locations = locs, gameComplete = game_complete, death_out = d_out, current_mode = c_mode, current_course = c_course, current_hole = c_hole })
+    end
   end
 
   -- Game logic runs every frame
@@ -2024,10 +2052,14 @@ while true do
     end
   end
 
+  -- Ask the user to delete their save file before connecting for the first time
+  check_save_file_deleted()
+
   -- Show a warning if not connected to the server
-  if server ~= nil and ap_socket == nil and has_connected == true then
-    gui.drawText(70, 180, "Lost connection. Please close/reopen the", "Red", "Black", 20)
-    gui.drawText(75, 200, " Lua Console and rerun the lua script.", "Red", "Black", 20)
+  if server ~= nil and ap_socket == nil and has_connected and has_deleted then
+    gui.drawText(64, 180, "Lost connection to the Mario Golf Client. ", "Red", "Black", 20)
+    gui.drawText(69, 200, "Please close and reopen the Lua Console.", "Red", "Black", 20)
+    gui.drawText(76, 220, "Then rerun the lua script to reconnect.", "Red", "Black", 20)
   end
 
   emu.frameadvance()
