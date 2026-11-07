@@ -203,6 +203,16 @@ class Charactersanity(Toggle):
     display_name = "Club Sanity (Coming Soon)"
     default = 0
 
+class DeathOnBadShot(Toggle):
+    """Sends a death link when a shot is hit into the water or out-of-bounds (only works if death link is enabled)."""
+    display_name = "Death Link on Bad Shot"
+    default = 1
+
+class DeathOnBogey(Toggle):
+    """Sends a death link when scoring a bogey or worse on a hole (only works if death link is enabled)."""
+    display_name = "Death Link on Bogey or Worse"
+    default = 0
+
 class TrapFillPercentage(Range):
     """Replace a percentage of junk items in the item pool with random traps."""
     display_name = "Trap Fill Percentage"
@@ -263,6 +273,8 @@ class MG64Options(PerGameCommonOptions):
     charactersanity: Charactersanity
     versussanity: Versussanity
     death_link: DeathLink
+    death_on_bad_shot: DeathOnBadShot
+    death_on_bogey: DeathOnBogey
     trap_fill_percentage: TrapFillPercentage
     terrible_lie_trap_percentage: TerribleLieTrapPercentage
     rain_trap_percentage: RainTrapPercentage

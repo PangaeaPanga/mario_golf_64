@@ -52,6 +52,40 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
         except:
             logger.info(INVALID_VALUE_MESSAGE)
 
+    # Toggle death on bad shot
+    def _cmd_death_on_bad_shot(self, value: str) -> None:
+        """Toggle death on water hazard or out-of-bounds on or off."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(value) == 0 or int(value) == 1:
+                    slot_data = self.ctx.slot_data
+                    slot_data["death_on_bad_shot"] = int(value)
+                    text_value = "enabled" if int(value) == 1 else "disabled"
+                    logger.info("Death on water hazard or out-of-bounds is now " + text_value + ".")
+                else:
+                    logger.info(INVALID_VALUE_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
+    # Toggle death on bogey or worse
+    def _cmd_death_on_bogey(self, value: str) -> None:
+        """Toggle death on bogey or worse on or off."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(value) == 0 or int(value) == 1:
+                    slot_data = self.ctx.slot_data
+                    slot_data["death_on_bogey"] = int(value)
+                    text_value = "enabled" if int(value) == 1 else "disabled"
+                    logger.info("Death on bogey or worse is now " + text_value + ".")
+                else:
+                    logger.info(INVALID_VALUE_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
     # Set wind_difficulty
     def _cmd_wind_difficulty(self, value: str) -> None:
         """Sets maximum possible wind. Takes effect on next hole reload (or next shot if windsanity is enabled)."""
@@ -68,8 +102,7 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
         except:
             logger.info(INVALID_VALUE_MESSAGE)
 
-
-    # Toggle pinsanity on/off
+    # Toggle pinsanity
     def _cmd_pinsanity(self, value: str) -> None:
         """Toggle pinsanity on or off."""
         try:
@@ -86,7 +119,7 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
         except:
             logger.info(INVALID_VALUE_MESSAGE)
 
-    # Toggle windsanity on/off
+    # Toggle windsanity
     def _cmd_windsanity(self, value: str) -> None:
         """Toggle windsanity on or off."""
         try:
@@ -266,6 +299,8 @@ class MarioGolf64Context(CommonContext):
             "num_gold_trophies":      gold_trophies,
             "required_courses":       int(self.slot_data.get("required_courses",       0)),
             "death_link":             int(bool(self.slot_data.get("death_link", False))),
+            "death_on_bad_shot":      int(self.slot_data.get("death_on_bad_shot",      1)),
+            "death_on_bogey":         int(self.slot_data.get("death_on_bogey",         0)),
         }
         trap = self.pending_traps.pop(0) if self.pending_traps else None
         death_in = 1 if self.death_link_pending else 0

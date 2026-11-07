@@ -483,5 +483,7 @@ class MG64World(World):
             "required_courses":       required_courses,
             "starting_ticket":        starting_ticket,
             "death_link":             self.options.death_link.value,
+            "death_on_bad_shot":      self.options.death_on_bad_shot.value,
+            "death_on_bogey":         self.options.death_on_bogey.value,
             "seed":                   str(self.multiworld.seed_name)
         }
