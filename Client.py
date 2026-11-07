@@ -14,6 +14,10 @@ CONNECTION_REFUSED_STATUS    = "Connection refused. Is BizHawk open with the con
 CONNECTION_RESET_STATUS      = "Connection lost. Please restart the connector script."
 CONNECTION_TIMING_OUT_STATUS = "Connection timed out. Please restart the connector script."
 
+NOT_CONNECTED_MESSAGE        = "Not connected. Please connect to the server before attempting to view or change any settings."
+INVALID_VALUE_MESSAGE        = "Invalid value. Please type either 0 (off) or 1 (on)."
+INVALID_WIND_MESSAGE         = "Invalid value. Please use a number between 0 and 21, inclusive."
+
 SOCKET_PORT = 28922
 
 class MarioGolf64CommandProcessor(ClientCommandProcessor):
@@ -21,6 +25,83 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
         """Check emulator connection status."""
         if isinstance(self.ctx, MarioGolf64Context):
             logger.info(f"Emulator status: {self.ctx.emulator_status}")
+
+    # Show slot data
+    def _cmd_slot_data(self) -> None:
+        """List slot data."""
+        if isinstance(self.ctx, MarioGolf64Context):
+            if not self.ctx.is_connected:
+                logger.info(NOT_CONNECTED_MESSAGE)
+            else:
+                logger.info(self.ctx.slot_data)
+
+    # Toggle death link on/off
+    def _cmd_death_link(self, value: str) -> None:
+        """Toggle death link on or off."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(value) == 0 or int(value) == 1:
+                    slot_data = self.ctx.slot_data
+                    slot_data["death_link"] = int(value)
+                    text_value = "enabled" if int(value) == 1 else "disabled"
+                    logger.info("Death link is now " + text_value + ".")
+                else:
+                    logger.info(INVALID_VALUE_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
+    # Set wind_difficulty
+    def _cmd_wind_difficulty(self, value: str) -> None:
+        """Sets maximum possible wind. Takes effect on next hole reload (or next shot if windsanity is enabled)."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(value) >= 0 and int(value) <= 21:
+                    slot_data = self.ctx.slot_data
+                    slot_data["wind_difficulty"] = int(value)
+                    logger.info("Maximum possible wind is now " + str(slot_data["wind_difficulty"]) + "mph.")
+                else:
+                    logger.info(INVALID_WIND_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
+
+    # Toggle pinsanity on/off
+    def _cmd_pinsanity(self, value: str) -> None:
+        """Toggle pinsanity on or off."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(value) == 0 or int(value) == 1:
+                    slot_data = self.ctx.slot_data
+                    slot_data["pinsanity"] = int(value)
+                    text_value = "enabled" if int(value) == 1 else "disabled"
+                    logger.info("Pinsanity is now " + text_value + ".")
+                else:
+                    logger.info(INVALID_VALUE_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
+    # Toggle windsanity on/off
+    def _cmd_windsanity(self, value: str) -> None:
+        """Toggle windsanity on or off."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(value) == 0 or int(value) == 1:
+                    slot_data = self.ctx.slot_data
+                    slot_data["windsanity"] = int(value)
+                    text_value = "enabled" if int(value) == 1 else "disabled"
+                    logger.info("Windsanity is now " + text_value + ".")
+                else:
+                    logger.info(INVALID_VALUE_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
 
 class MarioGolf64Context(CommonContext):
     command_processor = MarioGolf64CommandProcessor
@@ -42,6 +123,7 @@ class MarioGolf64Context(CommonContext):
         self.local_checked_locations: set[int] = set()
         self.location_data_ready = False
         self.items_received_count = 0
+        self.is_connected = False
 
         # PopTracker data
         self.current_mode = 0
@@ -55,6 +137,29 @@ class MarioGolf64Context(CommonContext):
             await self.get_username()
             await self.send_connect()
             return
+
+    async def disconnect(self, allow_autoreconnect: bool = False):
+        self.is_connected = False
+
+        # Code copied from CommonClient.py
+        if not allow_autoreconnect:
+            self.disconnected_intentionally = True
+            if self.cancel_autoreconnect():
+                logger.info("Cancelled auto-reconnect.")
+        if self.server and not self.server.socket.closed:
+            await self.server.socket.close()
+        if self.server_task is not None:
+            await self.server_task
+        if self.ui:
+            self.ui.update_hints()
+
+    async def connection_closed(self):
+        self.is_connected = False
+
+        # Code copied from CommonClient.py
+        if self.server and self.server.socket is not None:
+            await self.server.socket.close()
+        self.reset_server_state()
 
     def run_gui(self) -> None:
         from kvui import GameManager
@@ -73,6 +178,7 @@ class MarioGolf64Context(CommonContext):
             self.location_data_ready = True
 
         elif cmd == "Connected":
+            self.is_connected = True
             self.slot_data = args.get("slot_data", {})
             logger.info("Connected to AP server. Please load Mario Golf 64 in BizHawk and run connector_mario_golf_64.lua.")
             if self.slot_data.get("death_link"):
