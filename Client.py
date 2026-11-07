@@ -28,24 +28,74 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
 
     # Show slot data
     def _cmd_slot_data(self) -> None:
-        """List slot data."""
+        """List slot data. Note that this gets reset to its original values when the client is reopened."""
         if isinstance(self.ctx, MarioGolf64Context):
             if not self.ctx.is_connected:
                 logger.info(NOT_CONNECTED_MESSAGE)
             else:
                 logger.info(self.ctx.slot_data)
 
+    # Set wind_difficulty
+    def _cmd_wind_difficulty(self, new_value: str = "") -> None:
+        """Sets maximum possible wind. Takes effect on next hole reload (or next shot if windsanity is enabled)."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(new_value) >= 0 and int(new_value) <= 21:
+                    slot_data = self.ctx.slot_data
+                    slot_data["wind_difficulty"] = int(new_value)
+                    logger.info("Maximum possible wind is now " + str(slot_data["wind_difficulty"]) + "mph.")
+                else:
+                    logger.info(INVALID_WIND_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
+    # Toggle windsanity
+    def _cmd_windsanity(self, new_value: str = "") -> None:
+        """Toggle windsanity on or off."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(new_value) == 0 or int(new_value) == 1:
+                    slot_data = self.ctx.slot_data
+                    slot_data["windsanity"] = int(new_value)
+                    text_value = "enabled" if int(new_value) == 1 else "disabled"
+                    logger.info("Windsanity is now " + text_value + ".")
+                else:
+                    logger.info(INVALID_VALUE_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
+    # Toggle pinsanity
+    def _cmd_pinsanity(self, new_value: str = "") -> None:
+        """Toggle pinsanity on or off."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(new_value) == 0 or int(new_value) == 1:
+                    slot_data = self.ctx.slot_data
+                    slot_data["pinsanity"] = int(new_value)
+                    text_value = "enabled" if int(new_value) == 1 else "disabled"
+                    logger.info("Pinsanity is now " + text_value + ".")
+                else:
+                    logger.info(INVALID_VALUE_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
     # Toggle death link on/off
-    def _cmd_death_link(self, value: str) -> None:
+    def _cmd_death_link(self, new_value: str = "") -> None:
         """Toggle death link on or off."""
         try:
             if isinstance(self.ctx, MarioGolf64Context):
                 if not self.ctx.is_connected:
                     logger.info(NOT_CONNECTED_MESSAGE)
-                elif int(value) == 0 or int(value) == 1:
+                elif int(new_value) == 0 or int(new_value) == 1:
                     slot_data = self.ctx.slot_data
-                    slot_data["death_link"] = int(value)
-                    text_value = "enabled" if int(value) == 1 else "disabled"
+                    slot_data["death_link"] = int(new_value)
+                    text_value = "enabled" if int(new_value) == 1 else "disabled"
                     logger.info("Death link is now " + text_value + ".")
                 else:
                     logger.info(INVALID_VALUE_MESSAGE)
@@ -53,16 +103,16 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
             logger.info(INVALID_VALUE_MESSAGE)
 
     # Toggle death on bad shot
-    def _cmd_death_on_bad_shot(self, value: str) -> None:
+    def _cmd_death_on_bad_shot(self, new_value: str = "") -> None:
         """Toggle death on water hazard or out-of-bounds on or off."""
         try:
             if isinstance(self.ctx, MarioGolf64Context):
                 if not self.ctx.is_connected:
                     logger.info(NOT_CONNECTED_MESSAGE)
-                elif int(value) == 0 or int(value) == 1:
+                elif int(new_value) == 0 or int(new_value) == 1:
                     slot_data = self.ctx.slot_data
-                    slot_data["death_on_bad_shot"] = int(value)
-                    text_value = "enabled" if int(value) == 1 else "disabled"
+                    slot_data["death_on_bad_shot"] = int(new_value)
+                    text_value = "enabled" if int(new_value) == 1 else "disabled"
                     logger.info("Death on water hazard or out-of-bounds is now " + text_value + ".")
                 else:
                     logger.info(INVALID_VALUE_MESSAGE)
@@ -70,67 +120,17 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
             logger.info(INVALID_VALUE_MESSAGE)
 
     # Toggle death on bogey or worse
-    def _cmd_death_on_bogey(self, value: str) -> None:
+    def _cmd_death_on_bogey(self, new_value: str = "") -> None:
         """Toggle death on bogey or worse on or off."""
         try:
             if isinstance(self.ctx, MarioGolf64Context):
                 if not self.ctx.is_connected:
                     logger.info(NOT_CONNECTED_MESSAGE)
-                elif int(value) == 0 or int(value) == 1:
+                elif int(new_value) == 0 or int(new_value) == 1:
                     slot_data = self.ctx.slot_data
-                    slot_data["death_on_bogey"] = int(value)
-                    text_value = "enabled" if int(value) == 1 else "disabled"
+                    slot_data["death_on_bogey"] = int(new_value)
+                    text_value = "enabled" if int(new_value) == 1 else "disabled"
                     logger.info("Death on bogey or worse is now " + text_value + ".")
-                else:
-                    logger.info(INVALID_VALUE_MESSAGE)
-        except:
-            logger.info(INVALID_VALUE_MESSAGE)
-
-    # Set wind_difficulty
-    def _cmd_wind_difficulty(self, value: str) -> None:
-        """Sets maximum possible wind. Takes effect on next hole reload (or next shot if windsanity is enabled)."""
-        try:
-            if isinstance(self.ctx, MarioGolf64Context):
-                if not self.ctx.is_connected:
-                    logger.info(NOT_CONNECTED_MESSAGE)
-                elif int(value) >= 0 and int(value) <= 21:
-                    slot_data = self.ctx.slot_data
-                    slot_data["wind_difficulty"] = int(value)
-                    logger.info("Maximum possible wind is now " + str(slot_data["wind_difficulty"]) + "mph.")
-                else:
-                    logger.info(INVALID_WIND_MESSAGE)
-        except:
-            logger.info(INVALID_VALUE_MESSAGE)
-
-    # Toggle pinsanity
-    def _cmd_pinsanity(self, value: str) -> None:
-        """Toggle pinsanity on or off."""
-        try:
-            if isinstance(self.ctx, MarioGolf64Context):
-                if not self.ctx.is_connected:
-                    logger.info(NOT_CONNECTED_MESSAGE)
-                elif int(value) == 0 or int(value) == 1:
-                    slot_data = self.ctx.slot_data
-                    slot_data["pinsanity"] = int(value)
-                    text_value = "enabled" if int(value) == 1 else "disabled"
-                    logger.info("Pinsanity is now " + text_value + ".")
-                else:
-                    logger.info(INVALID_VALUE_MESSAGE)
-        except:
-            logger.info(INVALID_VALUE_MESSAGE)
-
-    # Toggle windsanity
-    def _cmd_windsanity(self, value: str) -> None:
-        """Toggle windsanity on or off."""
-        try:
-            if isinstance(self.ctx, MarioGolf64Context):
-                if not self.ctx.is_connected:
-                    logger.info(NOT_CONNECTED_MESSAGE)
-                elif int(value) == 0 or int(value) == 1:
-                    slot_data = self.ctx.slot_data
-                    slot_data["windsanity"] = int(value)
-                    text_value = "enabled" if int(value) == 1 else "disabled"
-                    logger.info("Windsanity is now " + text_value + ".")
                 else:
                     logger.info(INVALID_VALUE_MESSAGE)
         except:
