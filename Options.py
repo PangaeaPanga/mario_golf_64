@@ -9,7 +9,7 @@ class LimitTournamentLogic(Choice):
     limited: Progression items will only appear in required courses (except Gold Trophies if gold_trophy_shuffle is disabled).
     required_courses_only: Courses that are not required will be completely removed from the item pool.
     
-    limited is currently incompatible with Universal Tracker."""
+    limited and required_courses_only are currently incompatible with Universal Tracker."""
     display_name = "Limit Tournament Logic"
     option_disabled = 0
     option_limited = 1
@@ -69,16 +69,15 @@ class TrophyCount(Range):
     default = 2
 
 class GoldTrophyDifficulty(Range):
-    """Score required to earn a Gold Trophy in each tournament.
-
-    Each number subtracts one stroke, starting at -10.
-    0:  -10 (8 pars + 10 birdies)
-    8:  -18 (0 pars + 18 birdies)
-    20: -30 (12 eagles + 6 birdies)"""
+    """Score required to earn a Gold Trophy in each tournament. Note that this number is negative. Some examples are listed below.
+    -4 (14 pars + 4 birdies)
+    -18 (0 pars + 18 birdies)
+    -22 (4 eagles + 14 birdies)
+    -30 (12 eagles + 6 birdies)"""
     display_name = "Gold Trophy Difficulty"
-    range_start = 0
-    range_end = 20
-    default = 4
+    range_start = -30
+    range_end = -1
+    default = -4
 
 class NumberOfTournaments(Range):
     """Number of required tournaments to include in the pool when gold_trophy_shuffle is enabled. If win_mario_open is selected, the maximum value is 5.
@@ -214,7 +213,9 @@ class DeathOnBogey(Toggle):
     default = 0
 
 class TrapFillPercentage(Range):
-    """Replace a percentage of junk items in the item pool with random traps."""
+    """Replace a percentage of junk items in the item pool with random traps.
+    
+    Percentages for each individual trap type are listed below. Setting all traps to 0 makes it an equal likelihood to receive any trap."""
     display_name = "Trap Fill Percentage"
     range_start = 0
     range_end = 100

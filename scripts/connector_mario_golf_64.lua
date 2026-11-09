@@ -78,7 +78,7 @@ local setting_trophy_count            = 2
 local setting_wind_difficulty         = 10
 local setting_windsanity              = 0
 local setting_pinsanity               = 0
-local setting_gold_trophy_difficulty  = 4
+local setting_gold_trophy_difficulty  = -4
 local num_gold_trophies               = 0 -- number of gold trophies collected
 local required_courses                = 0
 
@@ -1701,9 +1701,9 @@ local HOLE_LOCATIONS = {
 }
 ]]--
 
-local bronze_score = 72
-local silver_score = 63
-local gold_score = 62
+local bronze_score = 81
+local silver_score = 72
+local gold_score = 72
 
 --[[
 local BEST_SCORES = {
@@ -1732,6 +1732,7 @@ local function get_best_score(course)
     end
 
     --gui.drawText(60, 290, BEST_SCORES[course], "Red", "Black", 22)
+    --gui.drawText(60, 310, (gold_score + setting_gold_trophy_difficulty), "Red", "Black", 22)
   end
 end
 
@@ -1750,7 +1751,7 @@ local function check_trophies()
     elseif string.find(t.name, "Silver") then
       if BEST_SCORES[math.floor(i/3)] <= silver_score then mark_detected(t.name) end
     elseif string.find(t.name, "Gold") then
-      if BEST_SCORES[math.floor(i/3)] <= (gold_score - setting_gold_trophy_difficulty) then mark_detected(t.name) end
+      if BEST_SCORES[math.floor(i/3)] <= (gold_score + setting_gold_trophy_difficulty) then mark_detected(t.name) end
     end
 
     --if memory.read_u32_be(t.addr) > 0 then
