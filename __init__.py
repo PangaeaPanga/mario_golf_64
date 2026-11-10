@@ -47,7 +47,7 @@ class MG64World(World):
     """
 
     game                 = "Mario Golf 64"
-    ap_world_version     = "0.1.0"
+    ap_world_version     = "0.2.0"
     web                  = MG64WebWorld()
     options_dataclass    = MG64Options
     options: MG64Options
