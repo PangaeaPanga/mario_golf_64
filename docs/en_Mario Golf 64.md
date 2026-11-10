@@ -40,7 +40,7 @@ Items that can be shuffled:
 - Fast Meter Trap (makes the shot meter move twice as fast for the next shot)
 
 ## How does death link work?
-Death links are sent when a ball is hit in the water or out-of-bounds. When death links are received, the next shot hit will be duffed ("Duffed it!").
+Death links are sent when a ball is hit in the water or out-of-bounds or if you score a bogey or worse on a hole (or both, depending on your YAML settings). When death links are received, the next shot hit will be duffed ("Duffed it!").
 
 ## When the player receives an item, what happens?
 Currently, there is no in-game notification system that tells the player that they have received an item. You can refer to the client by using the `/unlocked` command which tells you what do you have.
@@ -58,9 +58,9 @@ The logic for getting birdie badges is based on two assumptions:
 This logic starts to become fuzzier when you include wind (i.e. what happens if you have a strong headwind on a specific hole?), and the logic per hole assumes no wind, for simplicity's sake. So once you add every single character and every single club, the logic starts to grow exponentially more complicated. I highly recommend using the [PopTracker](https://github.com/PangaeaPanga/mario_golf_64_poptracker) to see what's in logic.
 
 The logic for trophy scoring is a bit different than how it is displayed in-game. Even if the game tells you that you got a certain trophy, these are the actual thresholds for each tournament:
-- Bronze trophies require **even par** or better
-- Silver trophies require **-6** or better
-- Gold trophy requirement is set in the YAML under **gold_trophy_difficulty** (default setting is -14)
+- Bronze trophies require **+9** or better
+- Silver trophies require **even par** or better
+- Gold trophies require anywhere from **-1 to -30**. The exact requirement is set in the YAML under **gold_trophy_difficulty** (default setting is -4)
 
 Some of the logic for a few of the checks have special logic, outside of "can you reach this distance with these clubs":
 - Both `Mario's Star Ring Shot 1 - Bloober Calamari Rings` and `Yoshi's Island Ring Shot 1 - Doughnut Hole` require approach shot because those greens are tiny
