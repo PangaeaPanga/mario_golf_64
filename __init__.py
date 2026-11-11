@@ -407,17 +407,19 @@ class MG64World(World):
             ]]
 
         # Characters and club abilities are always shuffled.
-        pool += [self.create_item(name) for name in [
-            "Maple",
-            "Metal Mario",
-            "Power Shot",
-            "Approach Shot",
-            "Woods",
-            "Wedges",
-            "Short Putter",
-            "Middle Putter",
-            "Long Putter",
-        ] if name != player_putter_map.get(self.player)] # Make sure to remove the starting putter from the pool.
+        character_and_club_items = [
+                    "Maple",
+                    "Metal Mario",
+                    "Power Shot",
+                    "Approach Shot",
+                    "Woods",
+                    "Wedges",
+                    "Short Putter",
+                    "Middle Putter",
+                    "Long Putter",
+                ]
+        
+        pool += [self.create_item(name) for name in character_and_club_items if name != player_putter_map.get(self.player)] # Make sure to remove the starting putter from the pool.
 
         # Gold Trophies only enter the pool when trophy shuffle is on.
         if self.options.gold_trophy_shuffle:
@@ -432,6 +434,13 @@ class MG64World(World):
         # Check to see if a valid amount of trophies are required
         elif self.options.trophy_count > 5:
             raise Exception("trophy_count is greater than 5 when gold_trophy_shuffle is disabled. Please fix your YAML.")
+
+        # Add extra progression items to the pool
+        extra_items = self.options.extra_items.value
+
+        for item_name in character_and_club_items:
+            num_items = extra_items.get(item_name)
+            pool += [self.create_item(item_name) for _ in range(num_items)]
 
         # Add the pool to the multiworld item list.
         self.multiworld.itempool += pool

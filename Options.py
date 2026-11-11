@@ -36,6 +36,34 @@ class EarlyShortPutter(Choice):
     option_enabled_local_only = 2
     default = 0
 
+class ExtraItems(OptionCounter):
+    """This determines how many extra of each individual item are added to the item pool."""
+   
+    display_name = "Number of Extra Items"
+    schema = Schema({
+        "Maple": int,
+        "Metal Mario": int,
+        "Power Shot": int,
+        "Approach Shot": int,
+        "Woods": int,
+        "Wedges": int,
+        "Short Putter": int,
+        "Middle Putter": int,
+        "Long Putter": int,
+    })
+    min = 0
+    default = {
+        "Maple": 0,
+        "Metal Mario": 0,
+        "Power Shot": 0,
+        "Approach Shot": 0,
+        "Woods": 0,
+        "Wedges": 0,
+        "Short Putter": 0,
+        "Middle Putter": 0,
+        "Long Putter": 0,
+    }
+
 class Goal(Choice):
     """This determines the victory condition/goal of the game.
 
@@ -276,6 +304,7 @@ mg64_option_groups = [
     OptionGroup("Item Options", [
         StartingPutter,
         EarlyShortPutter,
+        ExtraItems,
     ]),
     OptionGroup("Location Options", [
         Birdiesanity,
@@ -320,6 +349,7 @@ class MG64Options(PerGameCommonOptions):
     pinsanity: Pinsanity
     starting_putter: StartingPutter
     early_short_putter: EarlyShortPutter
+    extra_items: ExtraItems
     birdiesanity: Birdiesanity
     parsanity: Parsanity
     holesanity: Holesanity
