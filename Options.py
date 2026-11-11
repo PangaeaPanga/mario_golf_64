@@ -38,14 +38,6 @@ class Goal(Choice):
     option_gold_trophies = 1
     default = 0
 
-class GoldTrophyShuffle(Toggle):
-    """Add Gold Trophies as shuffled items in the multiworld item pool.
-
-    When disabled, Gold Trophies are collected by reaching the winning score set in gold_trophy_difficulty for each tournament.
-    When enabled, Gold Trophies from all main tournaments (except Mario Open) can instead be placed anywhere in the item pool."""
-    display_name = "Shuffle Gold Trophies"
-    default = 0
-
 class TrophyAmount(Range):
     """Total number of Gold Trophies in the pool.
 
@@ -67,6 +59,14 @@ class TrophyCount(Range):
     range_start = 0
     range_end = 200
     default = 2
+
+class GoldTrophyShuffle(Toggle):
+    """Add Gold Trophies as shuffled items in the multiworld item pool.
+
+    When disabled, Gold Trophies are collected by reaching the winning score set in gold_trophy_difficulty for each tournament.
+    When enabled, Gold Trophies from all main tournaments (except Mario Open) can instead be placed anywhere in the item pool."""
+    display_name = "Shuffle Gold Trophies"
+    default = 0
 
 class GoldTrophyDifficulty(Range):
     """Score required to earn a Gold Trophy in each tournament. Note that this number is negative. Some examples are listed below.
@@ -252,9 +252,9 @@ class FastMeterTrapPercentage(Range):
 mg64_option_groups = [
     OptionGroup("Goal Options", [
         Goal,
-        GoldTrophyShuffle,
         TrophyAmount,
         TrophyCount,
+        GoldTrophyShuffle,
     ]),
     OptionGroup("Logic", [
         GoldTrophyDifficulty,
