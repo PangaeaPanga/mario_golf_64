@@ -8,7 +8,7 @@ from worlds.generic.Rules import add_rule
 from .Items import MG64Item, MG64ItemData, item_data_table, item_table
 from .Locations import MG64Location, MG64LocationData, location_data_table, location_table
 from .Regions import region_data_table
-from .Options import MG64Options
+from .Options import MG64Options, mg64_option_groups
 from .Rules import set_rules
 
 # Dictionaries that map each setting per player during generation
@@ -38,6 +38,7 @@ class MG64WebWorld(WebWorld):
             ["PangaeaPanga"],
         )
     ]
+    option_groups = mg64_option_groups
 
 class MG64World(World):
     """

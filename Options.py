@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from Options import Choice, Toggle, Range, DeathLink, PerGameCommonOptions, StartInventoryPool, OptionCounter
+from Options import Choice, Toggle, Range, DeathLink, PerGameCommonOptions, StartInventoryPool, OptionCounter, OptionGroup
 from schema import Schema
 
 class LimitTournamentLogic(Choice):
@@ -42,28 +42,28 @@ class GoldTrophyShuffle(Toggle):
     """Add Gold Trophies as shuffled items in the multiworld item pool.
 
     When disabled, Gold Trophies are collected by reaching the winning score set in gold_trophy_difficulty for each tournament.
-    When enabled, Gold Trophies from the five main tournaments are items rather than fixed rewards."""
-    display_name = "Gold Trophy Shuffle"
+    When enabled, Gold Trophies from all main tournaments (except Mario Open) can instead be placed anywhere in the item pool."""
+    display_name = "Shuffle Gold Trophies"
     default = 0
 
 class TrophyAmount(Range):
     """Total number of Gold Trophies in the pool.
 
     This option only works if gold_trophy_shuffle is enabled. Otherwise, the total number of gold trophies in the pool is automatically set to 5 (6 if Mario Open likeness is greater than 0)."""
-    display_name = "Trophy Amount"
+    display_name = "Amount of Trophies"
     range_start = 0
     range_end = 200
     default = 5
 
 class TrophyCount(Range):
-    """This setting does one of two things depending on which goal is selected.
+    """Required trophy amount. This setting does one of two things depending on which goal is selected.
 
     win_mario_open: Number of Gold Trophies required to access Mario Open. If trophy_count is set to 0, a Mario Open Ticket is added to the item pool instead.
     gold_trophies: Sets the amount of gold trophies required to goal. trophy_count must be greater than 0 and also less than or equal to trophy_amount for this option.
     
     If gold_trophy_shuffle is disabled, the maximum value is 5 (6 if Mario Open likeness is greater than 0 and goal is set to gold_trophies).
     If gold_trophy_shuffle is enabled, the maximum value is 200."""
-    display_name = "Trophy Count"
+    display_name = "Required Trophies"
     range_start = 0
     range_end = 200
     default = 2
@@ -74,7 +74,7 @@ class GoldTrophyDifficulty(Range):
     -18 (0 pars + 18 birdies)
     -22 (4 eagles + 14 birdies)
     -30 (12 eagles + 6 birdies)"""
-    display_name = "Gold Trophy Difficulty"
+    display_name = "Gold Trophy Score Requirement"
     range_start = -30
     range_end = -1
     default = -4
@@ -204,12 +204,12 @@ class Charactersanity(Toggle):
 
 class DeathOnBadShot(Toggle):
     """Sends a death link when a shot is hit into the water or out-of-bounds (only works if death link is enabled)."""
-    display_name = "Death Link on Bad Shot"
+    display_name = "Send Death on Bad Shot"
     default = 1
 
 class DeathOnBogey(Toggle):
     """Sends a death link when scoring a bogey or worse on a hole (only works if death link is enabled)."""
-    display_name = "Death Link on Bogey or Worse"
+    display_name = "Send Death on Bogey or Worse"
     default = 0
 
 class TrapFillPercentage(Range):
@@ -249,30 +249,71 @@ class FastMeterTrapPercentage(Range):
     range_end = 100
     default = 0
 
+mg64_option_groups = [
+    OptionGroup("Goal Options", [
+        Goal,
+        GoldTrophyShuffle,
+        TrophyAmount,
+        TrophyCount,
+    ]),
+    OptionGroup("Logic", [
+        GoldTrophyDifficulty,
+        LimitTournamentLogic,
+        NumberOfTournaments,
+        TournamentLikeliness,
+        WindDifficulty,
+        Windsanity,
+        Pinsanity,
+    ]),
+    OptionGroup("Item Options", [
+        StartingPutter,
+    ]),
+    OptionGroup("Location Options", [
+        Birdiesanity,
+        Parsanity,
+        Holesanity,
+        Ringshotsanity,
+    ]),
+    OptionGroup("Death Link Options", [
+        DeathLink,
+        DeathOnBadShot,
+        DeathOnBogey,
+    ]),
+    OptionGroup("Traps", [
+        TrapFillPercentage,
+        TerribleLieTrapPercentage,
+        RainTrapPercentage,
+        HurricaneTrapPercentage,
+        FastMeterTrapPercentage,
+    ]),
+    OptionGroup("Not Yet Implemented", [
+        CourseDifficulty,
+        Minigolfsanity,
+        Clubsanity,
+        Charactersanity,
+        Versussanity,
+    ]),
+]
+
 @dataclass
 class MG64Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
-    limit_tournament_logic: LimitTournamentLogic
-    starting_putter: StartingPutter
     goal: Goal
-    gold_trophy_shuffle: GoldTrophyShuffle
     trophy_amount: TrophyAmount
     trophy_count: TrophyCount
+    gold_trophy_shuffle: GoldTrophyShuffle
     gold_trophy_difficulty: GoldTrophyDifficulty
+    limit_tournament_logic: LimitTournamentLogic
     number_of_tournaments: NumberOfTournaments
     tournament_likeliness: TournamentLikeliness
-    course_difficulty: CourseDifficulty
     wind_difficulty: WindDifficulty
     windsanity: Windsanity
     pinsanity: Pinsanity
-    ringshotsanity: Ringshotsanity
+    starting_putter: StartingPutter
     birdiesanity: Birdiesanity
     parsanity: Parsanity
     holesanity: Holesanity
-    minigolfsanity: Minigolfsanity
-    clubsanity: Clubsanity
-    charactersanity: Charactersanity
-    versussanity: Versussanity
+    ringshotsanity: Ringshotsanity
     death_link: DeathLink
     death_on_bad_shot: DeathOnBadShot
     death_on_bogey: DeathOnBogey
@@ -281,3 +322,8 @@ class MG64Options(PerGameCommonOptions):
     rain_trap_percentage: RainTrapPercentage
     hurricane_trap_percentage: HurricaneTrapPercentage
     fast_meter_trap_percentage: FastMeterTrapPercentage
+    course_difficulty: CourseDifficulty
+    minigolfsanity: Minigolfsanity
+    clubsanity: Clubsanity
+    charactersanity: Charactersanity
+    versussanity: Versussanity
