@@ -28,6 +28,14 @@ class StartingPutter(Choice):
     option_long_putter   = 2
     default = 1
 
+class EarlyShortPutter(Choice):
+    """Force a Short Putter item to appear early in the seed."""
+    display_name = "Early Short Putter"
+    option_disabled = 0
+    option_enabled  = 1
+    option_enabled_local_only = 2
+    default = 0
+
 class Goal(Choice):
     """This determines the victory condition/goal of the game.
 
@@ -267,6 +275,7 @@ mg64_option_groups = [
     ]),
     OptionGroup("Item Options", [
         StartingPutter,
+        EarlyShortPutter,
     ]),
     OptionGroup("Location Options", [
         Birdiesanity,
@@ -310,6 +319,7 @@ class MG64Options(PerGameCommonOptions):
     windsanity: Windsanity
     pinsanity: Pinsanity
     starting_putter: StartingPutter
+    early_short_putter: EarlyShortPutter
     birdiesanity: Birdiesanity
     parsanity: Parsanity
     holesanity: Holesanity

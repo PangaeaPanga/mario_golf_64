@@ -204,6 +204,12 @@ class MG64World(World):
                     if tournaments_not_in_logic[i] in loc_name:
                         current_player_locations.pop(loc_name)
 
+        # Check if early short putter is enabled
+        if self.options.early_short_putter.value == 1:
+            self.multiworld.early_items[self.player]["Short Putter"] = 1
+        elif self.options.early_short_putter.value == 2:
+            self.multiworld.local_early_items[self.player]["Short Putter"] = 1
+
         # Associate the correct locations and trophies for each player (needed if more than one Mario Golf YAML is in the same seed)
         player_location_map[self.player] = current_player_locations
         player_trophy_map[self.player] = trophies_in_pool
