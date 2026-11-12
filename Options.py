@@ -244,12 +244,12 @@ class ReceiveDeath(Toggle):
     default = 0
 
 class DeathOnBadShot(Toggle):
-    """Send a death link when a shot is hit into the water or out-of-bounds (only works if death link is enabled)."""
+    """Send a death link when a shot is hit into the water or out-of-bounds."""
     display_name = "Send Death Link on Bad Shot"
     default = 0
 
 class DeathOnBogey(Toggle):
-    """Send a death link when scoring a bogey or worse on a hole (only works if death link is enabled)."""
+    """Send a death link when scoring a bogey or worse on a hole."""
     display_name = "Send Death Link on Bogey or Worse"
     default = 0
 
