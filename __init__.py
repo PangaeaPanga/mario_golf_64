@@ -481,6 +481,13 @@ class MG64World(World):
     # Slot data
 
     def fill_slot_data(self) -> Dict:
+
+        # Calculate death_link depending on if either receive or send is enabled.
+        if self.options.receive_death_link.value or self.options.death_link_on_bad_shot.value or self.options.death_link_on_bad_shot.value:
+            death_link = 1
+        else:
+            death_link = 0
+
         return {
             "goal":                   self.options.goal.value,
             "starting_putter":        self.options.starting_putter.value,
@@ -498,8 +505,9 @@ class MG64World(World):
             "gold_trophy_difficulty": self.options.gold_trophy_difficulty.value,
             "required_courses":       required_courses,
             "starting_ticket":        starting_ticket,
-            "death_link":             self.options.death_link.value,
-            "death_on_bad_shot":      self.options.death_on_bad_shot.value,
-            "death_on_bogey":         self.options.death_on_bogey.value,
+            "death_link":             death_link, # self.options.death_link.value,
+            "receive_death_link":     self.options.receive_death_link.value,
+            "death_link_on_bad_shot": self.options.death_link_on_bad_shot.value,
+            "death_link_on_bogey":    self.options.death_link_on_bogey.value,
             "seed":                   str(self.multiworld.seed_name)
         }

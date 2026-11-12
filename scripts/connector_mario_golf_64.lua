@@ -570,18 +570,20 @@ end
 
 -- DEATH LINK
 
-local death_link_enabled  = false
-local death_on_bad_shot   = 1
-local death_on_bogey      = 0
-local death_link_can_send = false
-local death_out_pending   = false
-local death_in_pending    = false
-local last_death_hole     = -1
-local last_hole_strokes   = -1
-local last_hole_num       = -1
-local strokes_prev_frame  = 0
+local death_link_enabled     = false
+local receive_death_link     = 0
+local death_link_on_bad_shot = 1
+local death_link_on_bogey    = 0
+local death_link_can_send    = false
+local death_out_pending      = false
+local death_in_pending       = false
+local last_death_hole        = -1
+local last_hole_strokes      = -1
+local last_hole_num          = -1
+local strokes_prev_frame     = 0
 
 local function trigger_death_in()
+  if receive_death_link == 0 then return end
   death_in_pending = true
   print("[MG64] Death Link queued - will trigger on next swing")
 end
@@ -620,7 +622,7 @@ local function check_death_out()
   local ball_landing = mainmemory.read_u8(RDRAM.ball_landing)
 
   -- Death on water hazard or out-of-bounds
-  if action == 10 and death_on_bad_shot == 1 then
+  if action == 10 and death_link_on_bad_shot == 1 then
     if ball_landing == 0 or ball_landing == 5 or ball_landing == 22 then
       death_out_pending = true
       death_link_can_send = false
@@ -641,7 +643,7 @@ local function check_death_out()
 
   -- Death on bogey or worse
   -- TODO: accidentally sends a death link at the end of a tournament when in main menu?
-  if death_on_bogey == 1 then
+  if death_link_on_bogey == 1 then
     local game_mode = mainmemory.read_u8(RDRAM.game_mode)
     if game_mode ~= 5 then return end
 
@@ -1881,8 +1883,9 @@ local function receive_from_client()
         if p.settings.num_gold_trophies      ~= nil then num_gold_trophies              = p.settings.num_gold_trophies      end
         if p.settings.required_courses       ~= nil then required_courses               = p.settings.required_courses       end
         if p.settings.death_link             ~= nil then death_link_enabled             = (p.settings.death_link == 1)      end
-        if p.settings.death_on_bad_shot      ~= nil then death_on_bad_shot              = p.settings.death_on_bad_shot      end
-        if p.settings.death_on_bogey         ~= nil then death_on_bogey                 = p.settings.death_on_bogey         end
+        if p.settings.receive_death_link     ~= nil then receive_death_link             = p.settings.receive_death_link     end
+        if p.settings.death_link_on_bad_shot ~= nil then death_link_on_bad_shot         = p.settings.death_link_on_bad_shot end
+        if p.settings.death_link_on_bogey    ~= nil then death_link_on_bogey            = p.settings.death_link_on_bogey    end
       end
       apply_unlocks_to_sram()
     end

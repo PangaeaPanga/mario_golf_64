@@ -85,9 +85,9 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
         except:
             logger.info(INVALID_VALUE_MESSAGE)
 
-    # Toggle death link on/off
-    def _cmd_death_link(self, new_value: str = "") -> None:
-        """Toggle death link on or off."""
+    # Toggle death link (both receiving and sending)
+    async def _cmd_death_link(self, new_value: str = "") -> None:
+        """Toggle death link on or off (both receiving and sending)."""
         try:
             if isinstance(self.ctx, MarioGolf64Context):
                 if not self.ctx.is_connected:
@@ -96,41 +96,98 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
                     slot_data = self.ctx.slot_data
                     slot_data["death_link"] = int(new_value)
                     text_value = "enabled" if int(new_value) == 1 else "disabled"
+
+                    # Set/reset values
+                    slot_data["receive_death_link"] = int(new_value)
+                    slot_data["death_link_on_bad_shot"] = int(new_value)
+                    slot_data["death_link_on_bogey"] = int(new_value)
+                    self.ctx.death_link_enabled = bool(int(new_value))
+
+                    # Update death link tags
+                    await self.ctx.update_death_link(self.ctx.death_link_enabled)
+
                     logger.info("Death link is now " + text_value + ".")
                 else:
                     logger.info(INVALID_VALUE_MESSAGE)
         except:
             logger.info(INVALID_VALUE_MESSAGE)
 
-    # Toggle death on bad shot
-    def _cmd_death_on_bad_shot(self, new_value: str = "") -> None:
-        """Toggle death on water hazard or out-of-bounds on or off."""
+    # Toggle receiving death link
+    async def _cmd_receive_death_link(self, new_value: str = "") -> None:
+        """Toggle receiving death link on or off."""
         try:
             if isinstance(self.ctx, MarioGolf64Context):
                 if not self.ctx.is_connected:
                     logger.info(NOT_CONNECTED_MESSAGE)
                 elif int(new_value) == 0 or int(new_value) == 1:
                     slot_data = self.ctx.slot_data
-                    slot_data["death_on_bad_shot"] = int(new_value)
+                    slot_data["receive_death_link"] = int(new_value)
                     text_value = "enabled" if int(new_value) == 1 else "disabled"
-                    logger.info("Death on water hazard or out-of-bounds is now " + text_value + ".")
+                    logger.info("Receive death link is now " + text_value + ".")
+
+                    # Update death link tags
+                    if int(new_value) == 0 and int(slot_data["death_link_on_bad_shot"]) == 0 and int(slot_data["death_link_on_bogey"]) == 0:
+                        slot_data["death_link"] = new_value
+                        self.ctx.death_link_enabled = bool(int(new_value))
+                        await self.ctx.update_death_link(self.ctx.death_link_enabled)
+                    elif int(new_value) == 1:
+                        slot_data["death_link"] = new_value
+                        self.ctx.death_link_enabled = bool(int(new_value))
+                        await self.ctx.update_death_link(self.ctx.death_link_enabled)
                 else:
                     logger.info(INVALID_VALUE_MESSAGE)
         except:
             logger.info(INVALID_VALUE_MESSAGE)
 
-    # Toggle death on bogey or worse
-    def _cmd_death_on_bogey(self, new_value: str = "") -> None:
-        """Toggle death on bogey or worse on or off."""
+    # Toggle death link on bad shot
+    async def _cmd_death_link_on_bad_shot(self, new_value: str = "") -> None:
+        """Toggle death link on water hazard or out-of-bounds on or off."""
         try:
             if isinstance(self.ctx, MarioGolf64Context):
                 if not self.ctx.is_connected:
                     logger.info(NOT_CONNECTED_MESSAGE)
                 elif int(new_value) == 0 or int(new_value) == 1:
                     slot_data = self.ctx.slot_data
-                    slot_data["death_on_bogey"] = int(new_value)
+                    slot_data["death_link_on_bad_shot"] = int(new_value)
                     text_value = "enabled" if int(new_value) == 1 else "disabled"
-                    logger.info("Death on bogey or worse is now " + text_value + ".")
+                    logger.info("Death link on water hazard or out-of-bounds is now " + text_value + ".")
+
+                    # Update death link tags
+                    if int(new_value) == 0 and int(slot_data["receive_death_link"]) == 0 and int(slot_data["death_link_on_bogey"]) == 0:
+                        slot_data["death_link"] = new_value
+                        self.ctx.death_link_enabled = bool(int(new_value))
+                        await self.ctx.update_death_link(self.ctx.death_link_enabled)
+                    elif int(new_value) == 1:
+                        slot_data["death_link"] = new_value
+                        self.ctx.death_link_enabled = bool(int(new_value))
+                        await self.ctx.update_death_link(self.ctx.death_link_enabled)
+                else:
+                    logger.info(INVALID_VALUE_MESSAGE)
+        except:
+            logger.info(INVALID_VALUE_MESSAGE)
+
+    # Toggle death link on bogey or worse
+    async def _cmd_death_link_on_bogey(self, new_value: str = "") -> None:
+        """Toggle death link on bogey or worse on or off."""
+        try:
+            if isinstance(self.ctx, MarioGolf64Context):
+                if not self.ctx.is_connected:
+                    logger.info(NOT_CONNECTED_MESSAGE)
+                elif int(new_value) == 0 or int(new_value) == 1:
+                    slot_data = self.ctx.slot_data
+                    slot_data["death_link_on_bogey"] = int(new_value)
+                    text_value = "enabled" if int(new_value) == 1 else "disabled"
+                    logger.info("Death link on bogey or worse is now " + text_value + ".")
+
+                    # Update death link tags
+                    if int(new_value) == 0 and int(slot_data["receive_death_link"]) == 0 and int(slot_data["death_link_on_bad_shot"]) == 0:
+                        slot_data["death_link"] = new_value
+                        self.ctx.death_link_enabled = bool(int(new_value))
+                        await self.ctx.update_death_link(self.ctx.death_link_enabled)
+                    elif int(new_value) == 1:
+                        slot_data["death_link"] = new_value
+                        self.ctx.death_link_enabled = bool(int(new_value))
+                        await self.ctx.update_death_link(self.ctx.death_link_enabled)
                 else:
                     logger.info(INVALID_VALUE_MESSAGE)
         except:
@@ -149,6 +206,7 @@ class MarioGolf64Context(CommonContext):
         self.location_names_to_id: dict = {}
         self.pending_traps: list  = []
         self.trap_indices_sent: set = set()  # indices of trap items already queued
+        self.death_link_enabled: bool = False
         self.death_link_pending   = False  # received death waiting to trigger
         self.death_link_sent_hole = -1     # last hole we sent death on (avoid spam)
         self.awaiting_slot     = False
@@ -299,8 +357,9 @@ class MarioGolf64Context(CommonContext):
             "num_gold_trophies":      gold_trophies,
             "required_courses":       int(self.slot_data.get("required_courses",        0)),
             "death_link":             int(bool(self.slot_data.get("death_link", False   ))),
-            "death_on_bad_shot":      int(self.slot_data.get("death_on_bad_shot",       1)),
-            "death_on_bogey":         int(self.slot_data.get("death_on_bogey",          0)),
+            "receive_death_link":     int(self.slot_data.get("receive_death_link",      0)),
+            "death_link_on_bad_shot": int(self.slot_data.get("death_link_on_bad_shot",  1)),
+            "death_link_on_bogey":    int(self.slot_data.get("death_link_on_bogey",     0)),
         }
         trap = self.pending_traps.pop(0) if self.pending_traps else None
         death_in = 1 if self.death_link_pending else 0
@@ -381,6 +440,7 @@ async def emulator_sync_task(ctx: MarioGolf64Context) -> None:
                 await ctx.send_death(f"{player_name} doesn't know how to hit a golf ball.")
             
             await handle_tracker_info(ctx, payload)
+            #await ctx.update_death_link(ctx.death_link_enabled)
 
         except asyncio.TimeoutError:
             ctx.emulator_status = CONNECTION_TIMING_OUT_STATUS
