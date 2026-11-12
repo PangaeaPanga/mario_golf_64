@@ -74,6 +74,14 @@ class Goal(Choice):
     option_gold_trophies = 1
     default = 0
 
+class GoldTrophyShuffle(Toggle):
+    """This determines how Gold Trophies are placed in the multiworld item pool. It also affects how trophy_amount and trophy_count work.
+
+    When disabled, Gold Trophies are collected by reaching the winning score set in gold_trophy_difficulty for each tournament.
+    When enabled, Gold Trophies from all main tournaments (except Mario Open) can instead be placed anywhere in the item pool."""
+    display_name = "Shuffle Gold Trophies"
+    default = 0
+
 class TrophyAmount(Range):
     """Total number of Gold Trophies in the pool.
 
@@ -95,14 +103,6 @@ class TrophyCount(Range):
     range_start = 0
     range_end = 200
     default = 2
-
-class GoldTrophyShuffle(Toggle):
-    """Add Gold Trophies as shuffled items in the multiworld item pool.
-
-    When disabled, Gold Trophies are collected by reaching the winning score set in gold_trophy_difficulty for each tournament.
-    When enabled, Gold Trophies from all main tournaments (except Mario Open) can instead be placed anywhere in the item pool."""
-    display_name = "Shuffle Gold Trophies"
-    default = 0
 
 class GoldTrophyDifficulty(Range):
     """Score required to earn a Gold Trophy in each tournament. Note that this number is negative. Some examples are listed below.
@@ -238,6 +238,9 @@ class Charactersanity(Toggle):
     display_name = "Club Sanity (Coming Soon)"
     default = 0
 
+# TODO: Receive death link
+#       Change how trophy_amount works (make it extra_trophies instead?)
+
 class DeathOnBadShot(Toggle):
     """Sends a death link when a shot is hit into the water or out-of-bounds (only works if death link is enabled)."""
     display_name = "Send Death on Bad Shot"
@@ -288,9 +291,9 @@ class FastMeterTrapPercentage(Range):
 mg64_option_groups = [
     OptionGroup("Goal Options", [
         Goal,
+        GoldTrophyShuffle,
         TrophyAmount,
         TrophyCount,
-        GoldTrophyShuffle,
     ]),
     OptionGroup("Logic", [
         GoldTrophyDifficulty,
@@ -337,9 +340,9 @@ mg64_option_groups = [
 class MG64Options(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
     goal: Goal
+    gold_trophy_shuffle: GoldTrophyShuffle
     trophy_amount: TrophyAmount
     trophy_count: TrophyCount
-    gold_trophy_shuffle: GoldTrophyShuffle
     gold_trophy_difficulty: GoldTrophyDifficulty
     limit_tournament_logic: LimitTournamentLogic
     number_of_tournaments: NumberOfTournaments
