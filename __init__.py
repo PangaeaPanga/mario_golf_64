@@ -1,3 +1,5 @@
+import settings, typing
+
 from typing import Dict, List, TextIO, Any
 
 from BaseClasses import Region, Tutorial, ItemClassification, LocationProgressType
@@ -26,6 +28,14 @@ def run_client() -> None:
 icon_paths["mg64"] = f"ap:{__name__}/assets/mg64_ap_logo.png"
 components.append(Component("Mario Golf 64 Client", func=run_client, component_type=Type.CLIENT, icon="mg64"))
 
+class MarioGolf64Settings(settings.Group):
+  class EnableTracker(settings.Bool):
+    """
+      Whether to include the built-in Universal Tracker tab.
+    """
+
+  enable_tracker: typing.Union[EnableTracker, bool] = True
+
 class MG64WebWorld(WebWorld):
     theme = "grass"
     tutorials = [
@@ -52,6 +62,8 @@ class MG64World(World):
     web                  = MG64WebWorld()
     options_dataclass    = MG64Options
     options: MG64Options
+    settings: MarioGolf64Settings
+    settings_key         = "mg64_options"
     data_version         = 1
     location_name_to_id  = location_table
     item_name_to_id      = item_table

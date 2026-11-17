@@ -2,15 +2,23 @@ from __future__ import annotations
 
 import asyncio
 import json
+import settings
 
 from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser, gui_enabled, logger, server_loop
 from NetUtils import ClientStatus
 from Utils import async_start, init_logging
 
+# Determines whether to load Universal Tracker or not
+mg64_options = settings.get_settings().mg64_options
+tracker_override = mg64_options.enable_tracker
 tracker_loaded = False
+
 try:
-    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext, UT_VERSION
-    tracker_loaded = True
+    if not tracker_override:
+        raise ModuleNotFoundError
+    else:
+        from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext, UT_VERSION
+        tracker_loaded = True
 except ModuleNotFoundError:
     from CommonClient import CommonContext as SuperContext
     UT_VERSION = 0
@@ -26,6 +34,8 @@ NOT_CONNECTED_MESSAGE        = "Not connected. Please connect to the server befo
 INVALID_VALUE_MESSAGE        = "Invalid value. Please type either 0 (off) or 1 (on)."
 INVALID_WIND_MESSAGE         = "Invalid value. Please use a number between 0 and 21, inclusive."
 
+TRACKER_MESSAGE              = "Please restart the client for the change to take effect."
+
 SOCKET_PORT = 28922
 WORLD_VERSION = "0.2.0" # TODO: Put this in a Constants.py file eventually
 
@@ -34,6 +44,13 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
         """Check emulator connection status."""
         if isinstance(self.ctx, MarioGolf64Context):
             logger.info(f"Emulator status: {self.ctx.emulator_status}")
+
+    def _cmd_tracker(self):
+        """Toggle the built-in Universal Tracker on or off. Client restart is required."""
+        mg64_options.enable_tracker = not mg64_options.enable_tracker
+        self.tracker_loaded = mg64_options.enable_tracker
+        mg64_options._changed = True
+        logger.info(f"Tracker is now {"enabled" if mg64_options.enable_tracker else "disabled"}. {TRACKER_MESSAGE}")
 
     # Show slot data
     def _cmd_slot_data(self) -> None:
