@@ -74,6 +74,7 @@ local setting_parsanity               = 1
 local setting_minigolfsanity          = 0
 local setting_versussanity            = 0
 local setting_starting_putter         = 1  -- 0=short(30ft), 1=middle, 2=long(100ft)
+local setting_trophy_amount           = 5
 local setting_trophy_count            = 2
 local setting_wind_difficulty         = 10
 local setting_windsanity              = 0
@@ -1875,6 +1876,7 @@ local function receive_from_client()
         if p.settings.minigolfsanity         ~= nil then setting_minigolfsanity         = p.settings.minigolfsanity         end
         if p.settings.versussanity           ~= nil then setting_versussanity           = p.settings.versussanity           end
         if p.settings.starting_putter        ~= nil then setting_starting_putter        = p.settings.starting_putter        end
+        if p.settings.trophy_amount          ~= nil then setting_trophy_amount          = p.settings.trophy_amount          end
         if p.settings.trophy_count           ~= nil then setting_trophy_count           = p.settings.trophy_count           end
         if p.settings.wind_difficulty        ~= nil then setting_wind_difficulty        = p.settings.wind_difficulty        end
         if p.settings.windsanity             ~= nil then setting_windsanity             = p.settings.windsanity             end

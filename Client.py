@@ -349,6 +349,7 @@ class MarioGolf64Context(CommonContext):
             "minigolfsanity":         int(self.slot_data.get("minigolfsanity",          0)),
             "versussanity":           int(self.slot_data.get("versussanity",            0)),
             "starting_putter":        int(self.slot_data.get("starting_putter",         1)),
+            "trophy_amount":          int(self.slot_data.get("trophy_amount",           5)),
             "trophy_count":           int(self.slot_data.get("trophy_count",            2)),
             "wind_difficulty":        int(self.slot_data.get("wind_difficulty",        10)),
             "windsanity":             int(self.slot_data.get("windsanity",              0)),

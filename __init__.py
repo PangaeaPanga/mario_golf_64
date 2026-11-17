@@ -1,4 +1,4 @@
-from typing import Dict, List, TextIO
+from typing import Dict, List, TextIO, Any
 
 from BaseClasses import Region, Tutorial, ItemClassification, LocationProgressType
 from worlds.AutoWorld import WebWorld, World
@@ -55,6 +55,9 @@ class MG64World(World):
     data_version         = 1
     location_name_to_id  = location_table
     item_name_to_id      = item_table
+
+    # Universal Tracker yaml-less
+    ut_can_gen_without_yaml = True
 
     # Item creation
 
@@ -222,6 +225,26 @@ class MG64World(World):
     # Early generation
 
     def generate_early(self) -> None:
+        # Universal Tracker support
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            slot_data: dict[str, Any] = self.multiworld.re_gen_passthrough[self.game]
+            self.options.goal.value = slot_data["goal"]
+            self.options.starting_putter.value = slot_data["starting_putter"]
+            self.options.trophy_amount.value = slot_data["trophy_amount"]
+            self.options.trophy_count.value = slot_data["trophy_count"]
+            self.options.gold_trophy_shuffle.value = slot_data["gold_trophy_shuffle"]
+            self.options.ringshotsanity.value = slot_data["ringshotsanity"]
+            self.options.holesanity.value = slot_data["holesanity"]
+            self.options.birdiesanity.value = slot_data["birdiesanity"]
+            self.options.parsanity.value = slot_data["parsanity"]
+            self.options.minigolfsanity.value = slot_data["minigolfsanity"]
+            self.options.versussanity.value = slot_data["versussanity"]
+            self.options.wind_difficulty.value = slot_data["wind_difficulty"]
+            self.options.windsanity.value = slot_data["windsanity"]
+            self.options.pinsanity.value = slot_data["pinsanity"]
+            self.options.gold_trophy_difficulty.value = slot_data["gold_trophy_difficulty"]
+
         # Check to see if a valid amount of gold trophies is set
         if self.options.trophy_count == 0 and self.options.goal == 1:
             raise Exception("trophy_amount must be greater than 0 for gold_trophy goal. Please fix your YAML.")
@@ -479,6 +502,9 @@ class MG64World(World):
                     lambda state: state.has("Mario Open Ticket", self.player))
 
     # Slot data
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
+        return slot_data
 
     def fill_slot_data(self) -> Dict:
 
@@ -491,6 +517,7 @@ class MG64World(World):
         return {
             "goal":                   self.options.goal.value,
             "starting_putter":        self.options.starting_putter.value,
+            "trophy_amount":          self.options.trophy_amount.value,
             "trophy_count":           self.options.trophy_count.value,
             "gold_trophy_shuffle":    self.options.gold_trophy_shuffle.value,
             "ringshotsanity":         self.options.ringshotsanity.value,
@@ -509,5 +536,5 @@ class MG64World(World):
             "receive_death_link":     self.options.receive_death_link.value,
             "death_link_on_bad_shot": self.options.death_link_on_bad_shot.value,
             "death_link_on_bogey":    self.options.death_link_on_bogey.value,
-            "seed":                   str(self.multiworld.seed_name)
+            "seed":                   str(self.multiworld.seed_name),
         }
