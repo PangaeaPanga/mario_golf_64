@@ -7,6 +7,14 @@ from CommonClient import ClientCommandProcessor, CommonContext, get_base_parser,
 from NetUtils import ClientStatus
 from Utils import async_start, init_logging
 
+tracker_loaded = False
+try:
+    from worlds.tracker.TrackerClient import TrackerGameContext as SuperContext, UT_VERSION
+    tracker_loaded = True
+except ModuleNotFoundError:
+    from CommonClient import CommonContext as SuperContext
+    UT_VERSION = 0
+
 CONNECTION_INITIAL_STATUS    = "Not connected to emulator. Please run connector_mario_golf_64.lua in BizHawk."
 CONNECTION_TENTATIVE_STATUS  = "Initial connection made."
 CONNECTION_CONNECTED_STATUS  = "Connected to emulator."
@@ -19,6 +27,7 @@ INVALID_VALUE_MESSAGE        = "Invalid value. Please type either 0 (off) or 1 (
 INVALID_WIND_MESSAGE         = "Invalid value. Please use a number between 0 and 21, inclusive."
 
 SOCKET_PORT = 28922
+WORLD_VERSION = "0.2.0" # TODO: Put this in a Constants.py file eventually
 
 class MarioGolf64CommandProcessor(ClientCommandProcessor):
     def _cmd_n64(self) -> None:
@@ -193,7 +202,7 @@ class MarioGolf64CommandProcessor(ClientCommandProcessor):
         except:
             logger.info(INVALID_VALUE_MESSAGE)
 
-class MarioGolf64Context(CommonContext):
+class MarioGolf64Context(SuperContext):
     command_processor = MarioGolf64CommandProcessor
     game             = "Mario Golf 64"
     items_handling   = 0b111
@@ -220,6 +229,9 @@ class MarioGolf64Context(CommonContext):
         self.current_mode = 0
         self.current_course = 0
         self.current_hole = 0
+
+        # Universal Tracker stuff
+        self.tags = {"AP"}
 
     async def server_auth(self, password_requested: bool = False) -> None:
         if password_requested and not self.password:
@@ -252,17 +264,32 @@ class MarioGolf64Context(CommonContext):
             await self.server.socket.close()
         self.reset_server_state()
 
-    def run_gui(self) -> None:
-        from kvui import GameManager
+    def make_gui(self):
+        ui = super().make_gui()
+        ui.base_title = f"Mario Golf 64 Client {WORLD_VERSION}"
 
-        class MarioGolf64Manager(GameManager):
-            logging_pairs = [("Client", "Archipelago")]
-            base_title    = "Archipelago Mario Golf 64 Client"
+        # Include the Universal Tracker in the title
+        # if tracker_loaded:
+        #     ui.base_title += f" | Universal Tracker {UT_VERSION}"
 
-        self.ui      = MarioGolf64Manager(self)
-        self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
+        # Include the AP version in the title
+        ui.base_title += " | Archipelago"
+        
+        return ui
+
+    # def run_gui(self) -> None:
+    #     from kvui import GameManager
+
+    #     class MarioGolf64Manager(GameManager):
+    #         logging_pairs = [("Client", "Archipelago")]
+    #         base_title    = "Archipelago Mario Golf 64 Client"
+
+    #     self.ui      = MarioGolf64Manager(self)
+    #     self.ui_task = asyncio.create_task(self.ui.async_run(), name="UI")
 
     def on_package(self, cmd: str, args: dict) -> None:
+        super().on_package(cmd, args) # Universal Tracker stuff
+
         if cmd == "DataPackage":
             for game_data in args.get("data", {}).get("games", {}).values():
                 self.location_names_to_id.update(game_data.get("location_name_to_id", {}))
@@ -542,6 +569,10 @@ def main() -> None:
         args   = parser.parse_args()
         ctx    = MarioGolf64Context(args.connect, args.password)
         ctx.server_task = asyncio.create_task(server_loop(ctx), name="Server Loop")
+
+        # Universal Tracker stuff
+        if tracker_loaded:
+            ctx.run_generator()
 
         if gui_enabled:
             ctx.run_gui()
