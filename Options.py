@@ -87,20 +87,20 @@ class TrophyAmount(Range):
 
     This option only works if gold_trophy_shuffle is enabled. Otherwise, the total number of gold trophies in the pool is automatically set to 5 (6 if Mario Open likeness is greater than 0)."""
     display_name = "Amount of Trophies"
-    range_start = 0
+    range_start = 1
     range_end = 200
     default = 5
 
 class TrophyCount(Range):
     """Required trophy amount. This setting does one of two things depending on which goal is selected.
 
-    win_mario_open: Number of Gold Trophies required to access Mario Open. If trophy_count is set to 0, a Mario Open Ticket is added to the item pool instead.
-    gold_trophies: Sets the amount of gold trophies required to goal. trophy_count must be greater than 0 and also less than or equal to trophy_amount for this option.
+    win_mario_open: Number of Gold Trophies required to access Mario Open.
+    gold_trophies: Sets the amount of gold trophies required to goal. trophy_count must be less than or equal to trophy_amount for this option.
     
     If gold_trophy_shuffle is disabled, the maximum value is 5 (6 if Mario Open likeness is greater than 0 and goal is set to gold_trophies).
     If gold_trophy_shuffle is enabled, the maximum value is 200."""
     display_name = "Required Trophies"
-    range_start = 0
+    range_start = 1
     range_end = 200
     default = 2
 

@@ -285,8 +285,22 @@ class MG64World(World):
             # Remove the starting ticket from the item pool
             tournament_tickets.remove(starting_ticket)
 
-        elif not self.options.ringshotsanity:
-            self.multiworld.push_precollected(self.create_item("Mario Open Ticket"))
+        # This was code for when trophy_count was set to 0, it would add a Mario Open Ticket to the pool instead
+        # if self.options.trophy_count.value != 0:
+        #     if self.options.limit_tournament_logic.value == 0:
+        #         starting_ticket = self.random.choice(tournament_tickets)
+        #     else:
+        #         starting_ticket = self.random.choice(tournaments_in_logic) + " Ticket"
+        #     self.multiworld.push_precollected(self.create_item(starting_ticket))
+
+        #     # Remove the starting ticket from the item pool
+        #     tournament_tickets.remove(starting_ticket)
+
+        # else:
+        #     starting_ticket = "Mario Open Ticket"
+
+        #     if not self.options.ringshotsanity:
+        #         self.multiworld.push_precollected(self.create_item(starting_ticket))
 
         # Starting putter based on YAML option
         global putter_item
@@ -422,8 +436,8 @@ class MG64World(World):
         #if self.options.limit_tournament_logic.value == 2:
             #pool = self.random.sample(pool, self.options.trophy_count.value)
 
-        if self.options.trophy_count.value == 0:
-            pool.append(self.create_item("Mario Open Ticket"))
+        # if self.options.trophy_count.value == 0:
+        #     pool.append(self.create_item("Mario Open Ticket"))
 
         if self.options.ringshotsanity:
             pool += [self.create_item(name) for name in [
