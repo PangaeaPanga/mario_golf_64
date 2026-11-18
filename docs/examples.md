@@ -251,6 +251,8 @@ By changing `trophy_count` to `4`, the seed now only selects 4 tournaments out o
 
 Below are a list of various types of scenarios, which will help show which settings to modify and what values to set them to.
 
+---
+
 (Default Template Example) Win by beating Mario Open with a score of -4 or better. Win 2 tournaments to gain access to Mario Open. All tournaments are accessible.
 
 - goal: `win_mario_open`
@@ -267,6 +269,8 @@ Below are a list of various types of scenarios, which will help show which setti
   - Yoshi Championship: `1`
   - Boo Classic: `1`
   - Mario Open: `0`
+
+---
 
 Win by collecting 70% of Gold Trophies, which are shuffled throughout the MultiWorld. Only include 3 tournaments in the MultiWorld and remove the rest completely. This includes Mario Open. Each tournament's gold trophy location requires a score of -8 or better to send.
 
@@ -285,6 +289,8 @@ Win by collecting 70% of Gold Trophies, which are shuffled throughout the MultiW
   - Boo Classic: `1`
   - Mario Open: `0`
 
+---
+
 Win by getting 1st place in 2 tournaments. Make Mario Open have a high chance of being one of them, while the other can be either Toad Tournament or Yoshi Championship. Each tournament requires a score of -1 or better to win. Remove all the other tournaments from the MultiWorld.
 
 - goal: `gold_trophies`
@@ -301,6 +307,8 @@ Win by getting 1st place in 2 tournaments. Make Mario Open have a high chance of
   - Yoshi Championship: `1`
   - Boo Classic: `0`
   - Mario Open: `100`
+
+---
 
 Win by beating Mario Open with a score of -7 or better. Win 1 tournament to gain access to Mario Open. Make Koopa Cup have high odds of being selected. Shy Guy International has okay odds, Yoshi Championship has low odds, and Toad Tournament has extremely low odds. All tournaments are accessible, but only one will be required to beat by the seed. Winning an "unused" tournament will also grant access to Mario Open.
 
@@ -319,6 +327,8 @@ Win by beating Mario Open with a score of -7 or better. Win 1 tournament to gain
   - Boo Classic: `10`
   - Mario Open: `0`
 
+---
+
 Win by collecting all Gold Trophies in the pool, which are shuffled throughout the MultiWorld. Only make Koopa Cup and Boo Classic as the tournaments in logic. Mario Open is removed completely from the MultiWorld. The other 3 "unused" tournaments are accessible (after receiving their respective Tournament Ticket items), and winning them will only reward a filler item. Each tournament's gold trophy location requires a score of -2 or better to send.
 
 - goal: `gold_trophies`
@@ -335,6 +345,8 @@ Win by collecting all Gold Trophies in the pool, which are shuffled throughout t
   - Yoshi Championship: `0`
   - Boo Classic: `1`
   - Mario Open: `0`
+
+---
 
 Win by beating Mario Open with a score of -13 or better. Mario Open is unlocked at the very beginning. No other tournaments are in the MultiWorld.
 
