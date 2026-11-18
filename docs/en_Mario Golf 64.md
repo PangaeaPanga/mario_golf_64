@@ -74,7 +74,7 @@ How the `limit_tournament_logic` setting works:
 - `limited`: progression items will only appear in required courses. The lua script will tell you exactly which courses the logic wants you to complete. However, if you have access to any other tournaments, you can still get a gold trophy by winning that tournament if you want to and are able to. You are just not required to. This option is also incompatible with Universal Tracker
 - `required_courses_only`: Courses that are not required will be completely removed from the item pool
 
-For a more in-depth explanation on various YAML settings, go [here](docs/examples.md).
+For a more in-depth explanation on various YAML settings, go [here](examples.md).
 
 ## Future roadmap
 Not guaranteed to be added, but just ideas for the future:
