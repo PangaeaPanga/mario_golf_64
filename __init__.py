@@ -133,7 +133,7 @@ class MG64World(World):
                 tournament_locations.append("Mario Open")
 
         # Check to see if a valid amount of gold trophies required is set
-        if self.options.gold_trophy_shuffle == 0 and self.options.trophy_count > len([w for w in tournament_weights.values() if w > 0]):
+        if self.options.gold_trophy_shuffle.value == 0 and self.options.trophy_count.value > len([w for w in tournament_weights.values() if w > 0]):
             raise Exception("trophy_count is greater than the number of tournaments with a likeliness above 0. Please fix your YAML.")
 
         # Calculate which courses are in the pool
@@ -175,8 +175,8 @@ class MG64World(World):
 
             if self.options.number_of_tournaments.value == -1:
                 self.options.number_of_tournaments.value = len([w for w in weights if w > 0])
-            if self.options.gold_trophy_shuffle == 0:
-                self.options.number_of_tournaments.value = self.options.trophy_count
+            if self.options.gold_trophy_shuffle.value == 0:
+                self.options.number_of_tournaments.value = self.options.trophy_count.value
             k = min(self.options.number_of_tournaments.value, len([w for w in weights if w > 0]))
 
             pool = []
@@ -258,7 +258,7 @@ class MG64World(World):
             self.options.gold_trophy_difficulty.value = slot_data["gold_trophy_difficulty"]
 
         # Check to see if a valid amount of gold trophies is set
-        if self.options.trophy_count == 0 and self.options.goal == 1:
+        if self.options.trophy_count.value == 0 and self.options.goal == 1:
             raise Exception("trophy_amount must be greater than 0 for gold_trophy goal. Please fix your YAML.")
         
         self.multiworld.push_precollected(self.create_item("Peach"))
@@ -275,7 +275,7 @@ class MG64World(World):
         global starting_ticket
 
         # Determine logic for trophy count
-        if self.options.trophy_count != 0:
+        if self.options.trophy_count.value != 0:
             if self.options.limit_tournament_logic.value == 0:
                 starting_ticket = self.random.choice(tournament_tickets)
             else:
@@ -372,7 +372,7 @@ class MG64World(World):
 
         # If gold trophy shuffle is off, Gold Trophies are fixed rewards —
         # place them directly on their locations so they can't be randomised away.
-        if not self.options.gold_trophy_shuffle:
+        if not self.options.gold_trophy_shuffle.value:
             self._lock_gold_trophies(regions)
 
     # Checks whether a location should exist in this seed.
@@ -420,9 +420,9 @@ class MG64World(World):
 
         # Set the number of tournament tickets in the pool based on YAML setting
         #if self.options.limit_tournament_logic.value == 2:
-            #pool = self.random.sample(pool, self.options.trophy_count)
+            #pool = self.random.sample(pool, self.options.trophy_count.value)
 
-        if self.options.trophy_count == 0:
+        if self.options.trophy_count.value == 0:
             pool.append(self.create_item("Mario Open Ticket"))
 
         if self.options.ringshotsanity:
@@ -457,17 +457,17 @@ class MG64World(World):
         pool += [self.create_item(name) for name in character_and_club_items if name != player_putter_map.get(self.player)] # Make sure to remove the starting putter from the pool.
 
         # Gold Trophies only enter the pool when trophy shuffle is on.
-        if self.options.gold_trophy_shuffle:
+        if self.options.gold_trophy_shuffle.value:
 
             # Check to see if the amount of required trophies is less than the total amount in the pool
-            if self.options.trophy_amount < self.options.trophy_count:
+            if self.options.trophy_amount.value < self.options.trophy_count.value:
                 raise Exception("trophy_amount is less than trophy_count. Please fix your YAML.")
             
-            pool += [self.create_item("Gold Trophy") for _ in range(self.options.trophy_amount)]
+            pool += [self.create_item("Gold Trophy") for _ in range(self.options.trophy_amount.value)]
 
         # There are 5 main tournaments, each awarding one Gold Trophy.
         # Check to see if a valid amount of trophies are required
-        elif self.options.trophy_count > 5:
+        elif self.options.trophy_count.value > 5:
             raise Exception("trophy_count is greater than 5 when gold_trophy_shuffle is disabled. Please fix your YAML.")
 
         # Add extra progression items to the pool
