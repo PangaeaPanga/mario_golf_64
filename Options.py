@@ -7,9 +7,7 @@ class LimitTournamentLogic(Choice):
 
     disabled: Progression items may appear in any course.
     limited: Progression items will only appear in required courses (except Gold Trophies if gold_trophy_shuffle is disabled).
-    required_courses_only: Courses that are not required will be completely removed from the item pool.
-    
-    limited and required_courses_only are currently incompatible with Universal Tracker."""
+    required_courses_only: Courses that are not required will be completely removed from the item pool."""
     display_name = "Limit Tournament Logic"
     option_disabled = 0
     option_limited = 1
