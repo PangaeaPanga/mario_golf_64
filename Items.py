@@ -32,17 +32,17 @@ item_data_table: Dict[str, MG64ItemData] = {
     "Peach's Castle Ticket":  MG64ItemData(BASE_ID + 0x21, ItemClassification.progression),
 
     # Characters
-    "Peach":       MG64ItemData(BASE_ID + 0x30, ItemClassification.progression),
-    "Maple":       MG64ItemData(BASE_ID + 0x31, ItemClassification.progression),
-    "Metal Mario": MG64ItemData(BASE_ID + 0x32, ItemClassification.progression),
+    "Peach":       MG64ItemData(BASE_ID + 0x30, ItemClassification.progression | ItemClassification.useful),
+    "Maple":       MG64ItemData(BASE_ID + 0x31, ItemClassification.progression | ItemClassification.useful),
+    "Metal Mario": MG64ItemData(BASE_ID + 0x32, ItemClassification.progression | ItemClassification.useful),
 
     # Club Abilities
-    "Power Shot":    MG64ItemData(BASE_ID + 0x40, ItemClassification.progression),
+    "Power Shot":    MG64ItemData(BASE_ID + 0x40, ItemClassification.progression | ItemClassification.useful),
     "Approach Shot": MG64ItemData(BASE_ID + 0x41, ItemClassification.progression),
-    "Woods":         MG64ItemData(BASE_ID + 0x42, ItemClassification.progression),
-    "Irons":         MG64ItemData(BASE_ID + 0x43, ItemClassification.progression),
+    "Woods":         MG64ItemData(BASE_ID + 0x42, ItemClassification.progression | ItemClassification.useful),
+    "Irons":         MG64ItemData(BASE_ID + 0x43, ItemClassification.progression | ItemClassification.useful),
     "Wedges":        MG64ItemData(BASE_ID + 0x44, ItemClassification.progression),
-    "Short Putter":  MG64ItemData(BASE_ID + 0x45, ItemClassification.progression),
+    "Short Putter":  MG64ItemData(BASE_ID + 0x45, ItemClassification.progression | ItemClassification.useful),
     "Middle Putter": MG64ItemData(BASE_ID + 0x46, ItemClassification.useful),
     "Long Putter":   MG64ItemData(BASE_ID + 0x47, ItemClassification.useful),
 

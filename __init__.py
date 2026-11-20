@@ -75,7 +75,13 @@ class MG64World(World):
 
     def create_item(self, name: str) -> MG64Item:
         data = item_data_table[name]
-        return MG64Item(name, data.classification, data.code, self.player)
+        classification = data.classification
+
+        # Classify gold trophies as progression, but deprioritized and skips balancing (only if gold trophy shuffle is on)
+        if self.options.gold_trophy_shuffle.value == 1 and name == "Gold Trophy":
+            classification = ItemClassification.progression_deprioritized_skip_balancing
+
+        return MG64Item(name, classification, data.code, self.player)
 
     def create_filler(self) -> MG64Item:
         return self.create_item(self.get_filler_item_name())
