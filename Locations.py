@@ -145,8 +145,8 @@ location_data_table.update(_par_locs("Yoshi Championship",    LOC_BASE + 0x0360)
 location_data_table.update(_par_locs("Boo Classic",           LOC_BASE + 0x0380))
 location_data_table.update(_par_locs("Mario Open",            LOC_BASE + 0x03A0))
 
-location_data_table.update(_mini_golf_locs("Luigi's Garden", LOC_BASE + 0x0400))
-location_data_table.update(_mini_golf_locs("Peach's Castle", LOC_BASE + 0x0420))
+# location_data_table.update(_mini_golf_locs("Luigi's Garden", LOC_BASE + 0x0400))
+# location_data_table.update(_mini_golf_locs("Peach's Castle", LOC_BASE + 0x0420))
 
 _character_match_names = [
     "Plum", "Charlie", "Peach", "Baby Mario",
