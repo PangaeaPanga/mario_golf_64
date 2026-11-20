@@ -122,7 +122,7 @@ class NumberOfTournaments(Range):
     If gold_trophy_shuffle is disabled, this value is automatically set equal to trophy_count.
 
     Which tournaments that get included is determined by the option below (likeliness). Make sure that this value does not exceed the number of tournaments with a likeliness greater than 0.
-    Set this to -1 if you want all tournaments (it will auto-calculate the maximum amount of tournaments based on the likeliness values set)."""
+    Set this to 0 or -1 if you want all tournaments (it will auto-calculate the maximum amount of tournaments based on the likeliness values set)."""
     display_name = "Number of Tournaments"
     range_start = -1
     range_end = 6

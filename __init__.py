@@ -180,7 +180,7 @@ class MG64World(World):
             population = list(tournament_weights.keys())
             weights = list(tournament_weights.values())
 
-            if self.options.number_of_tournaments.value == -1:
+            if self.options.number_of_tournaments.value == -1 or self.options.number_of_tournaments.value == -0: # Eventually make this only 0 instead of -1?
                 self.options.number_of_tournaments.value = len([w for w in weights if w > 0])
             if self.options.gold_trophy_shuffle.value == 0:
                 self.options.number_of_tournaments.value = self.options.trophy_count.value
