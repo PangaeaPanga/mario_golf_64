@@ -456,11 +456,11 @@ class MG64World(World):
                 "Mario's Star - Ring Shot Ticket",
             ]]
 
-        if self.options.minigolfsanity:
-            pool += [self.create_item(name) for name in [
-                "Luigi's Garden Ticket",
-                "Peach's Castle Ticket",
-            ]]
+        # if self.options.minigolfsanity:
+        #     pool += [self.create_item(name) for name in [
+        #         "Luigi's Garden Ticket",
+        #         "Peach's Castle Ticket",
+        #     ]]
 
         # Characters and club abilities are always shuffled.
         character_and_club_items = [
