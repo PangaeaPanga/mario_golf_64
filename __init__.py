@@ -1,6 +1,7 @@
 import settings, typing
 
 from typing import Dict, List, TextIO, Any
+from Options import OptionError
 
 from BaseClasses import Region, Tutorial, ItemClassification, LocationProgressType
 from worlds.AutoWorld import WebWorld, World
@@ -140,7 +141,7 @@ class MG64World(World):
 
         # Check to see if a valid amount of gold trophies required is set
         if self.options.gold_trophy_shuffle.value == 0 and self.options.trophy_count.value > len([w for w in tournament_weights.values() if w > 0]):
-            raise Exception("trophy_count is greater than the number of tournaments with a likeliness above 0. Please fix your YAML.")
+            raise OptionError("trophy_count is greater than the number of tournaments with a likeliness above 0. Please fix your YAML.")
 
         # Calculate which courses are in the pool
         global tournament_tickets
@@ -265,7 +266,7 @@ class MG64World(World):
 
         # Check to see if a valid amount of gold trophies is set
         if self.options.trophy_count.value == 0 and self.options.goal == 1:
-            raise Exception("trophy_amount must be greater than 0 for gold_trophy goal. Please fix your YAML.")
+            raise OptionError("trophy_amount must be greater than 0 for gold_trophy goal. Please fix your YAML.")
         
         self.multiworld.push_precollected(self.create_item("Peach"))
         self.multiworld.push_precollected(self.create_item("Irons"))
@@ -481,14 +482,14 @@ class MG64World(World):
 
             # Check to see if the amount of required trophies is less than the total amount in the pool
             if self.options.trophy_amount.value < self.options.trophy_count.value:
-                raise Exception("trophy_amount is less than trophy_count. Please fix your YAML.")
+                raise OptionError("trophy_amount is less than trophy_count. Please fix your YAML.")
             
             pool += [self.create_item("Gold Trophy") for _ in range(self.options.trophy_amount.value)]
 
         # There are 5 main tournaments, each awarding one Gold Trophy.
         # Check to see if a valid amount of trophies are required
         elif self.options.trophy_count.value > 5:
-            raise Exception("trophy_count is greater than 5 when gold_trophy_shuffle is disabled. Please fix your YAML.")
+            raise OptionError("trophy_count is greater than 5 when gold_trophy_shuffle is disabled. Please fix your YAML.")
 
         # Add extra progression items to the pool
         extra_items = self.options.extra_items.value
