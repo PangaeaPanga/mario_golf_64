@@ -27,7 +27,9 @@ class StartingPutter(Choice):
     default = 1
 
 class EarlyShortPutter(Choice):
-    """Force a Short Putter item to appear early in the seed."""
+    """Force a Short Putter item to appear early in the seed.
+    
+    This setting has no effect if already starting with a short putter."""
     display_name = "Early Short Putter"
     option_disabled = 0
     option_enabled  = 1
